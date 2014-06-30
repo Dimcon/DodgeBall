@@ -159,9 +159,10 @@ public class Rect {
     }
 
     public void Draw(Texture tx, SpriteBatch sBtch) {
+        //Draw using LIBGDX Spritebatch. LibGDX uses the bottom left of
+        //the screen as the reference.
         sBtch.draw(tx, l, b, width(), height());
     }
-
     public void DrawWithAlpha(Texture tx,SpriteBatch sBtch, float fAlpha) {
         sBtch.setColor(1,1,1,fAlpha);
         Draw(tx,sBtch);

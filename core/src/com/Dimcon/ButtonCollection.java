@@ -29,12 +29,12 @@ class Button {
         hasIcon = false;
         DefStartup(simgBKGPath,sLabel,rPos);
     }
-    Button(String simgBKGPath,String simgIconPath, float fIconPadding, String sLabomel,Rect rPos) {
+    Button(String simgBKGPath,String simgIconPath, float fIconPadding, String sLabelP,Rect rPos) {
         hasIcon = true;
         rIcon.CopySquare(rPos,fIconPadding);
         rIcon.MoveLeft((rPosition.width()/2) - (rIcon.width()/2) - fIconPadding);
         imgIcon = new Texture(simgIconPath);
-        DefStartup(simgBKGPath,sLabel,rPos);
+        DefStartup(simgBKGPath,sLabelP,rPos);
     }
     public void DrawBtn(SpriteBatch batch,BitmapFont fnt,float fTextSize,BitmapFont.TextBounds tb) {
         rPosition.Draw(imgBackground,batch);
