@@ -12,7 +12,6 @@ public class ButtonCollection {
     public BitmapFont.TextBounds tb;
 }
 
-
 class Button {
     private Boolean hasIcon,enabled;
     private Rect rPosition = new Rect(),
@@ -30,7 +29,7 @@ class Button {
         hasIcon = false;
         DefStartup(simgBKGPath,sLabel,rPos);
     }
-    Button(String simgBKGPath,String simgIconPath, float fIconPadding, String sLabel,Rect rPos) {
+    Button(String simgBKGPath,String simgIconPath, float fIconPadding, String sLabomel,Rect rPos) {
         hasIcon = true;
         rIcon.CopySquare(rPos,fIconPadding);
         rIcon.MoveLeft((rPosition.width()/2) - (rIcon.width()/2) - fIconPadding);

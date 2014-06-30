@@ -16,10 +16,21 @@ public class Rect {
                 t,b,l,r;
     //Basic Rectangle
     //Simplifies a lot of code.
+    private Boolean RelativeToBottom = true,
+                    RelativeToLeft = true;
+
+    //Feature to allow simple rectangle animations.
+    //Positioning is handled by rect but updating must be done by parent class
+    // in a consistent loop.
+    boolean animAlpha = false,
+            animScale = false,
+            animTranslate = false
+                    ;
+    Rect rAnimTarget;
 
     //Get center of Rect (horizontal)
     public float CenterX() {
-        return (l + r)/2;
+            return (l + r)/2;
     }
     //Get center of Rect (Vertical)
     public float CenterY() {
@@ -27,13 +38,21 @@ public class Rect {
     }
     //Get width of Rect
     public float width() {
-        return r - l;
+        if (RelativeToLeft) {
+            return r - l;
+        } else {
+            return l - r;
+        }
     }
     //Get height of Rect
     public float height() {
-        return t - b;
+        if (RelativeToBottom) {
+            return t - b;
+        } else {
+            return b - t;
+        }
     }
-    //Move Rect to upper left, all points off screen.
+    //Move all points to negative.
     public void OffScreen() {
         l = - 10;
         r = - 10;
@@ -48,16 +67,41 @@ public class Rect {
     // #            |         |              #
     // ##############---------################
     public void CopySquare(Rect rP,float rPadding) {
-        if (rP.height() >= rP.width()) {
-            l = rP.CenterX() - ((rP.width()/2) - rPadding);
-            r = rP.CenterX() + ((rP.width()/2) - rPadding);
-            t = rP.CenterY() + ((rP.width()/2) - rPadding);
-            b = rP.CenterY() - ((rP.width()/2) - rPadding);
+        float w = ((rP.width()/2) - rPadding);
+        float h = ((rP.height()/2) - rPadding);
+        if (RelativeToBottom) {
+            if (rP.height() >= rP.width()) {
+                t = rP.CenterY() + w;
+                b = rP.CenterY() - w;
+            } else {
+                t = rP.CenterY() + h;
+                b = rP.CenterY() - h;
+            }
         } else {
-            l = rP.CenterX() - ((rP.height()/2) - rPadding);
-            r = rP.CenterX() + ((rP.height()/2) - rPadding);
-            t = rP.CenterY() + ((rP.height()/2) - rPadding);
-            b = rP.CenterY() - ((rP.height()/2) - rPadding);
+            if (rP.height() >= rP.width()) {
+                t = rP.CenterY() - w;
+                b = rP.CenterY() + w;
+            } else {
+                t = rP.CenterY() - h;
+                b = rP.CenterY() + h;
+            }
+        }
+        if (RelativeToLeft) {
+            if (rP.height() >= rP.width()) {
+                l = rP.CenterX() - w;
+                r = rP.CenterX() + w;
+            } else {
+                l = rP.CenterX() - h;
+                r = rP.CenterX() + h;
+            }
+        } else {
+            if (rP.height() >= rP.width()) {
+                l = rP.CenterX() + w;
+                r = rP.CenterX() - w;
+            } else {
+                l = rP.CenterX() + h;
+                r = rP.CenterX() - h;
+            }
         }
     }
     //Define rectangle in one line.
@@ -68,13 +112,42 @@ public class Rect {
         b = bottomP;
     }
     public void MoveLeft(float fAmount) {
-        l = l - fAmount;
-        r = r - fAmount;
+        if (RelativeToLeft) {
+            r = r - fAmount;
+            l = l - fAmount;
+        } else {
+            r = r + fAmount;
+            l = l + fAmount;
+        }
     }
     public void MoveDown(float fAmount) {
-        t = t - fAmount;
-        b = b - fAmount;
+        if (RelativeToBottom) {
+            t = t - fAmount;
+            b = b - fAmount;
+        } else {
+            t = t + fAmount;
+            b = b + fAmount;
+        }
     }
+    public void MoveRight(float fAmount) {
+        if (RelativeToLeft) {
+            r = r + fAmount;
+            l = l + fAmount;
+        } else {
+            r = r - fAmount;
+            l = l - fAmount;
+        }
+    }
+    public void Moveup(float fAmount) {
+        if (RelativeToBottom) {
+            t = t - fAmount;
+            b = b - fAmount;
+        } else {
+            t = t + fAmount;
+            b = b + fAmount;
+        }
+    }
+
     //Copy numerical values of given rect
     // (Saying Rect1 = Rect2 seems to make Rect1 point to Rect2 instead of
     //  just copying it)
@@ -88,4 +161,10 @@ public class Rect {
     public void Draw(Texture tx, SpriteBatch sBtch) {
         sBtch.draw(tx, l, b, width(), height());
     }
+
+    public void DrawWithAlpha(Texture tx,SpriteBatch sBtch, float fAlpha) {
+        sBtch.setColor(1,1,1,fAlpha);
+        Draw(tx,sBtch);
+    }
+
 }
