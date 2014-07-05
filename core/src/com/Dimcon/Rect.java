@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * Origin is bottom left (Booleans Interchangable)
  */
 public class Rect {
-    /** top,bottom,left,right  2
+    /** top,bottom,left,right  3
      * Post animation position
      * Distance to target animation position    */
      protected float
