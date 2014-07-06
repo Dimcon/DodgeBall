@@ -17,10 +17,18 @@ public class Rect {
     /** Basic Rectangle */
     /* top,bottom,left,right */
      protected float
-                t,b,l,r;
+                t,b,l,r,a = 1f;
     private Boolean RelativeToBottom = true,
                     RelativeToLeft = true;
-
+    public Rect(float leftP, float topP, float rightP, float bottomP) {
+        /** Define rectangle using a single procedure.  */
+        l = leftP;
+        r = rightP;
+        t = topP;
+        b = bottomP;
+    }
+    public Rect() {
+    }
     public float CenterX() {
     /** Get center of Rect (horizontal) */
             return (l + r)/2;
@@ -52,13 +60,7 @@ public class Rect {
         t = - 10;
         b = -10;
     }
-    public void equals(float leftP, float topP, float rightP, float bottomP) {
-        /** Define rectangle using a single procedure.  */
-        l = leftP;
-        r = rightP;
-        t = topP;
-        b = bottomP;
-    }
+
     public void MoveLeft(float fAmount) {
         if (RelativeToLeft) {
             r = r - fAmount;
@@ -151,14 +153,15 @@ public class Rect {
         }
     }
     public void Draw(Texture tx, SpriteBatch sBtch) {
-        /** Draw using LIBGDX Spritebatch. LibGDX uses the bottom left of
-         * the screen as the reference  */
-        sBtch.draw(tx, l, b, width(), height());
+
+        DrawWithAlpha(tx,sBtch,a);
     }
     public void DrawWithAlpha(Texture tx,SpriteBatch sBtch, float fAlpha) {
+    /** Draw using LIBGDX Spritebatch. LibGDX uses the bottom left of
+     * the screen as the reference  */
         Color newcol = sBtch.getColor();
         sBtch.setColor(1,1,1,fAlpha);
-        Draw(tx,sBtch);
+        sBtch.draw(tx, l, b, width(), height());
         sBtch.setColor(newcol);
     }
 
@@ -168,54 +171,57 @@ public class Rect {
       */
     protected float pt, pb, pl, pr, /* Post animation position               */
                     dt,db,dl,dr,    /* Distance to target animation position */
+                    preA, distA,     /* Post animation and distance till  Alpha */
 
                     AnimTime = 0,
                     AnimRate = 0,
-                    TimePerCycle = 0.016f;
+                    AlphaAnimTime = 0,
+                    AlphaAnimRate = 0,
+                    TimePerCycle = 16;
     boolean animAlpha = false,
-            animScale = false,
             animTranslate = false;
 
     public final int
             IAccel = 1,  /* Animation Interpolators  */
             IDecel = 2,
             IConst = 3;
-    public int Interpolator = IConst;
+    public int Interpolator, IAlphInterp = IConst;
 
-    public void StartAnimT(float Distance,int InterpolatorP,float Timemillis) {
+    public void StartAnimT(Rect rDist,int InterpolatorP,float Timemillis) {
         SetPostAnim();
         Interpolator = InterpolatorP;
         AnimRate = (float)(0.5f * Math.PI) / (Timemillis/TimePerCycle);
         AnimTime = 0;
         animTranslate = true;
-        dt = Distance;
-        db = Distance;
-        dl = Distance;
-        dr = Distance;
+        dt = rDist.t;
+        db = rDist.b;
+        dl = rDist.l;
+        dr = rDist.r;
     }
-    public void StartAnimS(float THorDistFrmCent,int InterpolatorP,float Timemillis) {
-        SetPostAnim();
-    }
-    public void StartAnimA(float Distance,int InterpolatorP,float Timemillis) {
-        SetPostAnim();
+    public void StartAnimA(float TargetAlpha,int InterpolatorP,float Timemillis) {
+        preA = a;
+        IAlphInterp = InterpolatorP;
+        AlphaAnimRate = (float)(0.5f * Math.PI) / (Timemillis/TimePerCycle);
+        AlphaAnimTime = 0;
+        animAlpha = true;
+        distA = TargetAlpha - a;
     }
 
     public void Animate() {
-        if (animTranslate || animScale || animAlpha) {
-            float fMult = 0;
-            switch (Interpolator) {
-                case 1:
-                    fMult = (float) (1 - Math.cos(AnimTime));    /*  Accelerate  */
-                    break;
-                case 2:
-                    fMult = (float) Math.sin(AnimTime);          /*  Decelerate */
-                    break;
-                case 3:
-                    fMult = (float) (AnimTime / 0.5f * Math.PI);     /* Constant */
-                    break;
-            }
-            AnimTime += AnimRate;
             if (animTranslate) {
+                float fMult = 0;
+                switch (Interpolator) {
+                    case 1:
+                        fMult = (float) (1 - Math.cos(AnimTime));    /*  Accelerate  */
+                        break;
+                    case 2:
+                        fMult = (float) Math.sin(AnimTime);          /*  Decelerate */
+                        break;
+                    case 3:
+                        fMult = (float) (AnimTime / (0.5f * Math.PI));     /* Constant */
+                        break;
+                }
+                AnimTime += AnimRate;
                 if (AnimTime > 0.5f * Math.PI) {
                     animTranslate = false;
                     AnimTime = 0;
@@ -225,13 +231,26 @@ public class Rect {
                 l = pl + (dl * fMult);
                 r = pr + (dr * fMult);
             }
-            if (animScale) {
-
-            }
             if (animAlpha) {
-
+                float fMult2 = 0;
+                switch (Interpolator) {
+                    case 1:
+                        fMult2 = (float) (1 - Math.cos(AlphaAnimTime));    /*  Accelerate  */
+                        break;
+                    case 2:
+                        fMult2 = (float) Math.sin(AlphaAnimTime);          /*  Decelerate */
+                        break;
+                    case 3:
+                        fMult2 = (float) (AlphaAnimTime / (0.5f * Math.PI));     /* Constant */
+                        break;
+                }
+                AlphaAnimTime += AlphaAnimRate;
+                if (AlphaAnimTime > 0.5f * Math.PI) {
+                    animAlpha = false;
+                    AlphaAnimTime = 0;
+                }
+                a = preA + (distA * fMult2);
             }
-        }
     }
 
     private void SetPostAnim() {
@@ -241,3 +260,4 @@ public class Rect {
         pr = r;
     }
 }
+

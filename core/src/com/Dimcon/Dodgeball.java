@@ -16,9 +16,10 @@ public class Dodgeball extends ApplicationAdapter {
         iUnit = Gdx.graphics.getHeight() / 100;
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
-        rTest = new Rect();
-        rTest.equals(0,20*iUnit,20*iUnit,0);
-        rTest.StartAnimT(20*iUnit,1,2000);
+        rTest = new Rect(0,20*iUnit,20*iUnit,0);
+        rTest.StartAnimT(new Rect(0,100*iUnit,100*iUnit,0), 1, 1000);
+        rTest.a = 0;
+        rTest.StartAnimA(1f,1,4000);
         Gdx.graphics.setContinuousRendering(true);
 	}
 
