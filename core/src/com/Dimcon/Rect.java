@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.util.Timer;
+
 /**
  * Created by daimonsewell on 6/6/14.
  *
@@ -13,12 +15,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  */
 public class Rect {
     /** top,bottom,left,right  3 21
-     * Post animation position
+     * post animation position
      * Distance to target animation position    */
      protected float
                 t,b,l,r,
                 pt, pb, pl, pr,
-                dt,db,dl,dr;
+                dt,db,dl,dr,
+                AnimTime = 0,
+                AnimRate = 0,
+                TimePerCycle = 0.016f;
     /** Basic Rectangle */
     private Boolean RelativeToBottom = true,
                     RelativeToLeft = true;
@@ -30,8 +35,44 @@ public class Rect {
     boolean animAlpha = false,
             animScale = false,
             animTranslate = false;
-    Rect rAnimTarget;
+    /** Animation Interpolator  */
+    public final int    Accel = 1,
+                        Decel = 2,
+                        Const = 3;
+    public int Interpolator = Const;
 
+    public void StartAnimT(float Distance,int InterpolatorP,float Timemillis) {
+        SetPostAnim();
+        Interpolator = InterpolatorP;
+        AnimRate = (float)(0.5f * Math.PI) / (Timemillis/TimePerCycle);
+        AnimTime = 0;
+        animTranslate = true;
+    }
+    public void StartAnimS(float THorDistFrmCent,int InterpolatorP,float Timemillis) {
+        SetPostAnim();
+    }
+    public void StartAnimA(float Distance,int InterpolatorP,float Timemillis) {
+        SetPostAnim();
+    }
+
+    public void Animate() {
+
+        if (animTranslate) {
+        }
+        if (animScale) {
+
+        }
+        if (animAlpha) {
+
+        }
+    }
+
+    private void SetPostAnim() {
+        pt = t;
+        pb = b;
+        pl = l;
+        pr = r;
+    }
     public float CenterX() {
     /** Get center of Rect (horizontal) */
             return (l + r)/2;
