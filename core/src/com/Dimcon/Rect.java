@@ -14,65 +14,13 @@ import java.util.Timer;
  * Origin is bottom left (Booleans Interchangable)
  */
 public class Rect {
-    /** top,bottom,left,right  3 21
-     * post animation position
-     * Distance to target animation position    */
-     protected float
-                t,b,l,r,
-                pt, pb, pl, pr,
-                dt,db,dl,dr,
-                AnimTime = 0,
-                AnimRate = 0,
-                TimePerCycle = 0.016f;
     /** Basic Rectangle */
+    /* top,bottom,left,right */
+     protected float
+                t,b,l,r;
     private Boolean RelativeToBottom = true,
                     RelativeToLeft = true;
-    /**
-      * Feature to allow simple rectangle animations.
-      * Positioning is handled by rect but updating must be done by parent class
-      * in a consistent loop.
-    */
-    boolean animAlpha = false,
-            animScale = false,
-            animTranslate = false;
-    /** Animation Interpolator  */
-    public final int    Accel = 1,
-                        Decel = 2,
-                        Const = 3;
-    public int Interpolator = Const;
 
-    public void StartAnimT(float Distance,int InterpolatorP,float Timemillis) {
-        SetPostAnim();
-        Interpolator = InterpolatorP;
-        AnimRate = (float)(0.5f * Math.PI) / (Timemillis/TimePerCycle);
-        AnimTime = 0;
-        animTranslate = true;
-    }
-    public void StartAnimS(float THorDistFrmCent,int InterpolatorP,float Timemillis) {
-        SetPostAnim();
-    }
-    public void StartAnimA(float Distance,int InterpolatorP,float Timemillis) {
-        SetPostAnim();
-    }
-
-    public void Animate() {
-
-        if (animTranslate) {
-        }
-        if (animScale) {
-
-        }
-        if (animAlpha) {
-
-        }
-    }
-
-    private void SetPostAnim() {
-        pt = t;
-        pb = b;
-        pl = l;
-        pr = r;
-    }
     public float CenterX() {
     /** Get center of Rect (horizontal) */
             return (l + r)/2;
@@ -214,4 +162,56 @@ public class Rect {
         sBtch.setColor(newcol);
     }
 
+    /** Simple rectangle animations.
+      * Positioning is handled by rect but updating must be done by parent class
+      * in a consistent loop.
+      */
+    protected float pt, pb, pl, pr, /* Post animation position               */
+                    dt,db,dl,dr,    /* Distance to target animation position */
+
+                    AnimTime = 0,
+                    AnimRate = 0,
+                    TimePerCycle = 0.016f;
+    boolean animAlpha = false,
+            animScale = false,
+            animTranslate = false;
+
+    public final int
+            Accel = 1,  /* Animation Interpolators  */
+            Decel = 2,
+            Const = 3;
+    public int Interpolator = Const;
+
+    public void StartAnimT(float Distance,int InterpolatorP,float Timemillis) {
+        SetPostAnim();
+        Interpolator = InterpolatorP;
+        AnimRate = (float)(0.5f * Math.PI) / (Timemillis/TimePerCycle);
+        AnimTime = 0;
+        animTranslate = true;
+    }
+    public void StartAnimS(float THorDistFrmCent,int InterpolatorP,float Timemillis) {
+        SetPostAnim();
+    }
+    public void StartAnimA(float Distance,int InterpolatorP,float Timemillis) {
+        SetPostAnim();
+    }
+
+    public void Animate() {
+
+        if (animTranslate) {
+        }
+        if (animScale) {
+
+        }
+        if (animAlpha) {
+
+        }
+    }
+
+    private void SetPostAnim() {
+        pt = t;
+        pb = b;
+        pl = l;
+        pr = r;
+    }
 }
