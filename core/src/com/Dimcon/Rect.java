@@ -177,10 +177,10 @@ public class Rect {
             animTranslate = false;
 
     public final int
-            Accel = 1,  /* Animation Interpolators  */
-            Decel = 2,
-            Const = 3;
-    public int Interpolator = Const;
+            IAccel = 1,  /* Animation Interpolators  */
+            IDecel = 2,
+            IConst = 3;
+    public int Interpolator = IConst;
 
     public void StartAnimT(float Distance,int InterpolatorP,float Timemillis) {
         SetPostAnim();
@@ -188,6 +188,10 @@ public class Rect {
         AnimRate = (float)(0.5f * Math.PI) / (Timemillis/TimePerCycle);
         AnimTime = 0;
         animTranslate = true;
+        dt = Distance;
+        db = Distance;
+        dl = Distance;
+        dr = Distance;
     }
     public void StartAnimS(float THorDistFrmCent,int InterpolatorP,float Timemillis) {
         SetPostAnim();
@@ -197,14 +201,36 @@ public class Rect {
     }
 
     public void Animate() {
+        if (animTranslate || animScale || animAlpha) {
+            float fMult = 0;
+            switch (Interpolator) {
+                case 1:
+                    fMult = (float) (1 - Math.cos(AnimTime));    /*  Accelerate  */
+                    break;
+                case 2:
+                    fMult = (float) Math.sin(AnimTime);          /*  Decelerate */
+                    break;
+                case 3:
+                    fMult = (float) (AnimTime / 0.5f * Math.PI);     /* Constant */
+                    break;
+            }
+            AnimTime += AnimRate;
+            if (animTranslate) {
+                if (AnimTime > 0.5f * Math.PI) {
+                    animTranslate = false;
+                    AnimTime = 0;
+                }
+                t = pt + (dt * fMult);
+                b = pb + (db * fMult);
+                l = pl + (dl * fMult);
+                r = pr + (dr * fMult);
+            }
+            if (animScale) {
 
-        if (animTranslate) {
-        }
-        if (animScale) {
+            }
+            if (animAlpha) {
 
-        }
-        if (animAlpha) {
-
+            }
         }
     }
 
