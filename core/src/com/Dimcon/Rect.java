@@ -14,14 +14,17 @@ import java.util.Timer;
  * Origin is bottom left (Booleans Interchangable)
  */
 public class Rect {
-    /** Basic Rectangle */
+    /** Rectangle with basic animation support
+     *  Has a higher memory footprint than RectS (Very basic Rect)*/
     /* top,bottom,left,right */
-     protected float
+     private float
                 t,b,l,r,a = 1f;
     private Boolean RelativeToBottom = true,
-                    RelativeToLeft = true;
+                    RelativeToLeft = true,
+                    Changed = true,
+                    Debugg = true;
     public Rect(float leftP, float topP, float rightP, float bottomP) {
-        /** Define rectangle using a single procedure.  */
+        /* Define rectangle using a single procedure.  */
         l = leftP;
         r = rightP;
         t = topP;
@@ -29,16 +32,49 @@ public class Rect {
     }
     public Rect() {
     }
+
+    public float l() {
+        return l;
+    }
+    public float r() {
+        return r;
+    }
+    public float t() {
+        return t;
+    }
+    public float b() {
+        return b;
+    }
+    public void setl(float left) {
+        l = left;
+        Changed = true;
+    }
+    public void setr(float right) {
+        r = right;
+        Changed = true;
+    }
+    public void setb(float bottom) {
+        b = bottom;
+        Changed = true;
+    }
+    public void sett(float top) {
+        t = top;
+        Changed = true;
+    }
+    public void setAlpha(float Alpha) {
+        a = Alpha;
+    }
+
     public float CenterX() {
-    /** Get center of Rect (horizontal) */
+    /* Get center of Rect (horizontal) */
             return (l + r)/2;
     }
     public float CenterY() {
-    /** Get center of Rect (Vertical)   */
+    /* Get center of Rect (Vertical)   */
         return (t + b)/2;
     }
     public float width() {
-    /** Get width of Rect   */
+    /* Get width of Rect   */
         if (RelativeToLeft) {
             return r - l;
         } else {
@@ -46,7 +82,7 @@ public class Rect {
         }
     }
     public float height() {
-    /** Get height of Rect */
+    /* Get height of Rect */
         if (RelativeToBottom) {
             return t - b;
         } else {
@@ -54,7 +90,7 @@ public class Rect {
         }
     }
     public void OffScreen() {
-    /** Move all points to negative. */
+    /* Move all points to negative. */
         l = - 10;
         r = - 10;
         t = - 10;
@@ -98,7 +134,7 @@ public class Rect {
         }
     }
     public void RectCopy(Rect rP) {
-        /** Copy numerical values of given rect.
+        /* Copy numerical values of given rect.
          * Saying Rect1 = Rect2 seems to make Rect1 point to Rect2 instead of
          * just copying it.    */
         l = rP.l;
@@ -153,11 +189,15 @@ public class Rect {
         }
     }
     public void Draw(Texture tx, SpriteBatch sBtch) {
-
-        DrawWithAlpha(tx,sBtch,a);
+        if (Debugg) {
+            Color newcol = sBtch.getColor();
+            sBtch.setColor(1,1,1,1);
+            DrawOutLine(tx, sBtch);
+            sBtch.setColor(newcol);
+        } else DrawWithAlpha(tx,sBtch,a);
     }
     public void DrawWithAlpha(Texture tx,SpriteBatch sBtch, float fAlpha) {
-    /** Draw using LIBGDX Spritebatch. LibGDX uses the bottom left of
+    /* Draw using LIBGDX Spritebatch. LibGDX uses the bottom left of
      * the screen as the reference  */
         Color newcol = sBtch.getColor();
         sBtch.setColor(1,1,1,fAlpha);
@@ -165,13 +205,32 @@ public class Rect {
         sBtch.setColor(newcol);
     }
 
+    private RectS rsl = new RectS(),rst = new RectS(),rsr= new RectS(),rsb= new RectS();
+    public void DrawOutLine(Texture tx, SpriteBatch batch) {
+        if (Changed) {
+            rsl.RectCopy(this);
+            rsl.r = l + 10;
+            rst.RectCopy(this);
+            rst.b = t + 10;
+            rsr.RectCopy(this);
+            rsr.l = r + 10;
+            rsb.RectCopy(this);
+            rsb.t = b + 10;
+            Changed = false;
+        }
+        rsl.Draw(tx,batch);
+        rst.Draw(tx,batch);
+        rsr.Draw(tx,batch);
+        rsb.Draw(tx,batch);
+    }
+
     /** Simple rectangle animations.
       * Positioning is handled by rect but updating must be done by parent class
       * in a consistent loop.
       */
-    protected float pt, pb, pl, pr, /* Post animation position               */
-                    dt,db,dl,dr,    /* Distance to target animation position */
-                    preA, distA,     /* Post animation and distance till  Alpha */
+    protected float pt, pb, pl, pr,     /* Post animation position.                 */
+                    dt,db,dl,dr,        /* Distance to target animation position.   */
+                    preA, distA,        /* Post animation and distance till  Alpha. */
 
                     AnimTime = 0,
                     AnimRate = 0,
@@ -208,49 +267,49 @@ public class Rect {
     }
 
     public void Animate() {
-            if (animTranslate) {
-                float fMult = 0;
-                switch (Interpolator) {
-                    case 1:
-                        fMult = (float) (1 - Math.cos(AnimTime));    /*  Accelerate  */
-                        break;
-                    case 2:
-                        fMult = (float) Math.sin(AnimTime);          /*  Decelerate */
-                        break;
-                    case 3:
-                        fMult = (float) (AnimTime / (0.5f * Math.PI));     /* Constant */
-                        break;
-                }
-                AnimTime += AnimRate;
-                if (AnimTime > 0.5f * Math.PI) {
-                    animTranslate = false;
-                    AnimTime = 0;
-                }
-                t = pt + (dt * fMult);
-                b = pb + (db * fMult);
-                l = pl + (dl * fMult);
-                r = pr + (dr * fMult);
+        if (animTranslate) {
+            float fMult = 0;
+            switch (Interpolator) {
+                case 1:
+                    fMult = (float) (1 - Math.cos(AnimTime));    /*  Accelerate  */
+                    break;
+                case 2:
+                    fMult = (float) Math.sin(AnimTime);          /*  Decelerate */
+                    break;
+                case 3:
+                    fMult = (float) (AnimTime / (0.5f * Math.PI));     /* Constant */
+                    break;
             }
-            if (animAlpha) {
-                float fMult2 = 0;
-                switch (Interpolator) {
-                    case 1:
-                        fMult2 = (float) (1 - Math.cos(AlphaAnimTime));    /*  Accelerate  */
-                        break;
-                    case 2:
-                        fMult2 = (float) Math.sin(AlphaAnimTime);          /*  Decelerate */
-                        break;
-                    case 3:
-                        fMult2 = (float) (AlphaAnimTime / (0.5f * Math.PI));     /* Constant */
-                        break;
-                }
-                AlphaAnimTime += AlphaAnimRate;
-                if (AlphaAnimTime > 0.5f * Math.PI) {
-                    animAlpha = false;
-                    AlphaAnimTime = 0;
-                }
-                a = preA + (distA * fMult2);
+            AnimTime += AnimRate;
+            if (AnimTime > 0.5f * Math.PI) {
+                animTranslate = false;
+                AnimTime = 0;
             }
+            sett(pt + (dt * fMult));
+            setb(pb + (db * fMult));
+            setl(pl + (dl * fMult));
+            setr(pr + (dr * fMult));
+        }
+        if (animAlpha) {
+            float fMult2 = 0;
+            switch (Interpolator) {
+                case 1:
+                    fMult2 = (float) (1 - Math.cos(AlphaAnimTime));    /*  Accelerate  */
+                    break;
+                case 2:
+                    fMult2 = (float) Math.sin(AlphaAnimTime);          /*  Decelerate */
+                    break;
+                case 3:
+                    fMult2 = (float) (AlphaAnimTime / (0.5f * Math.PI));     /* Constant */
+                    break;
+            }
+            AlphaAnimTime += AlphaAnimRate;
+            if (AlphaAnimTime > 0.5f * Math.PI) {
+                animAlpha = false;
+                AlphaAnimTime = 0;
+            }
+            a = preA + (distA * fMult2);
+        }
     }
 
     private void SetPostAnim() {
@@ -258,6 +317,153 @@ public class Rect {
         pb = b;
         pl = l;
         pr = r;
+    }
+}
+
+class RectS {
+    /** Basic Rectangle */
+    /* top,bottom,left,right */
+    protected float
+            t,b,l,r;
+    private Boolean RelativeToBottom = true,
+            RelativeToLeft = true;
+    public RectS(float leftP, float topP, float rightP, float bottomP) {
+        /** Define rectangle using a single procedure.  */
+        l = leftP;
+        r = rightP;
+        t = topP;
+        b = bottomP;
+    }
+    public RectS() {
+        OffScreen();
+    }
+    public float CenterX() {
+        /** Get center of Rect (horizontal) */
+        return (l + r)/2;
+    }
+    public float CenterY() {
+        /** Get center of Rect (Vertical)   */
+        return (t + b)/2;
+    }
+    public float width() {
+        /** Get width of Rect   */
+        if (RelativeToLeft) {
+            return r - l;
+        } else {
+            return l - r;
+        }
+    }
+    public float height() {
+        /** Get height of Rect */
+        if (RelativeToBottom) {
+            return t - b;
+        } else {
+            return b - t;
+        }
+    }
+    public void OffScreen() {
+        /** Move all points to negative. */
+        l = - 10;
+        r = - 10;
+        t = - 10;
+        b = -10;
+    }
+
+    public void MoveLeft(float fAmount) {
+        if (RelativeToLeft) {
+            r = r - fAmount;
+            l = l - fAmount;
+        } else {
+            r = r + fAmount;
+            l = l + fAmount;
+        }
+    }
+    public void MoveDown(float fAmount) {
+        if (RelativeToBottom) {
+            t = t - fAmount;
+            b = b - fAmount;
+        } else {
+            t = t + fAmount;
+            b = b + fAmount;
+        }
+    }
+    public void MoveRight(float fAmount) {
+        if (RelativeToLeft) {
+            r = r + fAmount;
+            l = l + fAmount;
+        } else {
+            r = r - fAmount;
+            l = l - fAmount;
+        }
+    }
+    public void Moveup(float fAmount) {
+        if (RelativeToBottom) {
+            t = t - fAmount;
+            b = b - fAmount;
+        } else {
+            t = t + fAmount;
+            b = b + fAmount;
+        }
+    }
+    public void RectCopy(Rect rP) {
+        /** Copy numerical values of given rect.
+         * Saying Rect1 = Rect2 seems to make Rect1 point to Rect2 instead of
+         * just copying it.    */
+        l = rP.l();
+        r = rP.r();
+        t = rP.t();
+        b = rP.b();
+    }
+    public void CopySquare(Rect rP,float rPadding) {
+        /** Turn into square as large as possible within rectangle(
+         *  - - - - - - -_-_-_-_-_- - - - - - - -
+         * | Rectangle  | New     |              |
+         * |            | Square  |              |
+         * |            |         |              |
+         * |            |         |              |
+         *  _ _ _ _ _ _ _-_-_-_-_-_ _ _ _ _ _ _ _
+         */
+        float w = ((rP.width()/2) - rPadding);
+        float h = ((rP.height()/2) - rPadding);
+        if (RelativeToBottom) {
+            if (rP.height() >= rP.width()) {
+                t = rP.CenterY() + w;
+                b = rP.CenterY() - w;
+            } else {
+                t = rP.CenterY() + h;
+                b = rP.CenterY() - h;
+            }
+        } else {
+            if (rP.height() >= rP.width()) {
+                t = rP.CenterY() - w;
+                b = rP.CenterY() + w;
+            } else {
+                t = rP.CenterY() - h;
+                b = rP.CenterY() + h;
+            }
+        }
+        if (RelativeToLeft) {
+            if (rP.height() >= rP.width()) {
+                l = rP.CenterX() - w;
+                r = rP.CenterX() + w;
+            } else {
+                l = rP.CenterX() - h;
+                r = rP.CenterX() + h;
+            }
+        } else {
+            if (rP.height() >= rP.width()) {
+                l = rP.CenterX() + w;
+                r = rP.CenterX() - w;
+            } else {
+                l = rP.CenterX() + h;
+                r = rP.CenterX() - h;
+            }
+        }
+    }
+    public void Draw(Texture tx, SpriteBatch sBtch) {
+        /** Draw using LIBGDX Spritebatch. LibGDX uses the bottom left of
+         * the screen as the reference  */
+        sBtch.draw(tx, l, b, width(), height());
     }
 }
 

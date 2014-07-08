@@ -5,12 +5,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Dodgeball extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
     float iUnit;
 	Rect rTest;
+    Button btnTouch;
+    Drawable drwble;
+
 	@Override
 	public void create () {
         iUnit = Gdx.graphics.getHeight() / 100;
@@ -18,9 +24,10 @@ public class Dodgeball extends ApplicationAdapter {
 		img = new Texture("badlogic.jpg");
         rTest = new Rect(0,20*iUnit,20*iUnit,0);
         rTest.StartAnimT(new Rect(0,100*iUnit,100*iUnit,0), 1, 1000);
-        rTest.a = 0;
-        rTest.StartAnimA(1f,1,4000);
+        rTest.setAlpha(0);
+        rTest.StartAnimA(1f, 1, 4000);
         Gdx.graphics.setContinuousRendering(true);
+        /*btnTouch = new ImageTextButton(img);*/
 	}
 
 	@Override
