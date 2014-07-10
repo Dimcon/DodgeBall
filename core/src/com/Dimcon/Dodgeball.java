@@ -11,32 +11,29 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Dodgeball extends ApplicationAdapter {
 	SpriteBatch batch;
-	Texture img;
-    float iUnit;
-	Rect rTest;
-    Button btnTouch;
-    Drawable drwble;
+    static ScreenManager Scrnman;
+    static SplashScreen splash;
+    static MainScreen main;
 
 	@Override
 	public void create () {
-        iUnit = Gdx.graphics.getHeight() / 100;
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
-        rTest = new Rect(0,20*iUnit,20*iUnit,0);
-        rTest.StartAnimT(new Rect(0,100*iUnit,100*iUnit,0), 1, 1000);
-        rTest.setAlpha(0);
-        rTest.StartAnimA(1f, 1, 4000);
         Gdx.graphics.setContinuousRendering(true);
-        /*btnTouch = new ImageTextButton(img);*/
+        splash = new SplashScreen();
+        main = new MainScreen();
+        Scrnman = new ScreenManager();
+        Scrnman.AddScreen(splash);
+        Scrnman.AddScreen(main);
+        Scrnman.ScreenStore.get("Splash").stage = Stage.Create;
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-        rTest.Draw(img,batch);
-        rTest.Animate();
+        //rTest.Draw(img,batch);
+        Scrnman.Update(batch);
 		batch.end();
 	}
 }

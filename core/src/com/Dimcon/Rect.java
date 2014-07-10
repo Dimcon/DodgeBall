@@ -22,7 +22,7 @@ public class Rect {
     private Boolean RelativeToBottom = true,
                     RelativeToLeft = true,
                     Changed = true,
-                    Debugg = true;
+                    Debugg = false;
     public Rect(float leftP, float topP, float rightP, float bottomP) {
         /* Define rectangle using a single procedure.  */
         l = leftP;
@@ -44,6 +44,9 @@ public class Rect {
     }
     public float b() {
         return b;
+    }
+    public float a() {
+        return a;
     }
     public void setl(float left) {
         l = left;
@@ -211,9 +214,9 @@ public class Rect {
             rsl.RectCopy(this);
             rsl.r = l + 5;
             rst.RectCopy(this);
-            rst.b = t + 5;
+            rst.b = t - 5;
             rsr.RectCopy(this);
-            rsr.l = r + 5;
+            rsr.l = r - 5;
             rsb.RectCopy(this);
             rsb.t = b + 5;
             Changed = false;
@@ -239,27 +242,32 @@ public class Rect {
                     TimePerCycle = 16;
     boolean animAlpha = false,
             animTranslate = false;
+    RectS rsDest;
 
-    public final int
-            IAccel = 1,  /* Animation Interpolators  */
-            IDecel = 2,
-            IConst = 3;
-    public int Interpolator, IAlphInterp = IConst;
+    public Interpolator Interp, AlphaInterp = com.Dimcon.Interpolator.Constant;
 
-    public void StartAnimT(Rect rDist,int InterpolatorP,float Timemillis) {
+    public void StartAnimT(Rect rDest,Interpolator InterpolatorP,float Timemillis) {
         SetPostAnim();
-        Interpolator = InterpolatorP;
+        Interp = InterpolatorP;
+
+        /* Amount to increase the AnimTime by on each cycle, assuming 60fps
+        *  Target Angle (90 degrees, 0.5 radians) divided by
+        *  (Target time in milliseconds / Milliseconds each cycle) */
         AnimRate = (float)(0.5f * Math.PI) / (Timemillis/TimePerCycle);
-        AnimTime = 0;
+        AnimTime = 0;   /* Start the clock at 0 */
         animTranslate = true;
-        dt = rDist.t;
-        db = rDist.b;
-        dl = rDist.l;
-        dr = rDist.r;
+        /* Store requested ending values to ensure the animation ends where
+        *  requested.   */
+        rsDest = new RectS(rDest.l,rDest.t,rDest.r,rDest.b);
+        dt = rDest.t - t;
+        db = rDest.b - b;
+        dl = rDest.l - l;
+        dr = rDest.r - r;
     }
-    public void StartAnimA(float TargetAlpha,int InterpolatorP,float Timemillis) {
+    public void StartAnimA(float TargetAlpha,Interpolator InterpolatorP,float Timemillis) {
         preA = a;
-        IAlphInterp = InterpolatorP;
+        AlphaInterp = InterpolatorP;
+        /* Refer to StartAnimT ^^  */
         AlphaAnimRate = (float)(0.5f * Math.PI) / (Timemillis/TimePerCycle);
         AlphaAnimTime = 0;
         animAlpha = true;
@@ -268,47 +276,54 @@ public class Rect {
 
     public void Animate() {
         if (animTranslate) {
-            float fMult = 0;
-            switch (Interpolator) {
-                case 1:
+            float fMult = 0; /* Value to multiply the final distance by*/
+            switch (Interp) {
+                case Accelerate:
                     fMult = (float) (1 - Math.cos(AnimTime));    /*  Accelerate  */
                     break;
-                case 2:
+                case Decelerate:
                     fMult = (float) Math.sin(AnimTime);          /*  Decelerate */
                     break;
-                case 3:
-                    fMult = (float) (AnimTime / (0.5f * Math.PI));     /* Constant */
+                case Constant:
+                    fMult = (float) (AnimTime / (0.50000f * Math.PI));     /* Constant */
                     break;
             }
             AnimTime += AnimRate;
-            if (AnimTime > 0.5f * Math.PI) {
-                animTranslate = false;
-                AnimTime = 0;
-            }
+
             sett(pt + (dt * fMult));
             setb(pb + (db * fMult));
             setl(pl + (dl * fMult));
             setr(pr + (dr * fMult));
+            if (fMult >= 0.999f) {
+                animTranslate = false;
+                AnimTime = 0;
+                sett(rsDest.t);
+                setb(rsDest.b);
+                setl(rsDest.l);
+                setr(rsDest.r);
+            }
         }
         if (animAlpha) {
             float fMult2 = 0;
-            switch (Interpolator) {
-                case 1:
+            switch (AlphaInterp) {
+                case Accelerate:
                     fMult2 = (float) (1 - Math.cos(AlphaAnimTime));    /*  Accelerate  */
                     break;
-                case 2:
+                case Decelerate:
                     fMult2 = (float) Math.sin(AlphaAnimTime);          /*  Decelerate */
                     break;
-                case 3:
+                case Constant:
                     fMult2 = (float) (AlphaAnimTime / (0.5f * Math.PI));     /* Constant */
                     break;
             }
             AlphaAnimTime += AlphaAnimRate;
-            if (AlphaAnimTime > 0.5f * Math.PI) {
+            a = preA + (distA * fMult2);
+            if (fMult2 >= 0.999f) {
                 animAlpha = false;
                 AlphaAnimTime = 0;
+                a = preA + distA;
             }
-            a = preA + (distA * fMult2);
+
         }
     }
 
@@ -319,7 +334,9 @@ public class Rect {
         pr = r;
     }
 }
-
+enum Interpolator {
+    Accelerate, Decelerate, Constant
+}
 class RectS {
     /** Basic Rectangle */
     /* top,bottom,left,right */
