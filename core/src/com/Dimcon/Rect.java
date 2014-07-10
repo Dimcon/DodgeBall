@@ -209,13 +209,13 @@ public class Rect {
     public void DrawOutLine(Texture tx, SpriteBatch batch) {
         if (Changed) {
             rsl.RectCopy(this);
-            rsl.r = l + 10;
+            rsl.r = l + 5;
             rst.RectCopy(this);
-            rst.b = t + 10;
+            rst.b = t + 5;
             rsr.RectCopy(this);
-            rsr.l = r + 10;
+            rsr.l = r + 5;
             rsb.RectCopy(this);
-            rsb.t = b + 10;
+            rsb.t = b + 5;
             Changed = false;
         }
         rsl.Draw(tx,batch);
