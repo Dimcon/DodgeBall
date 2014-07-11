@@ -28,7 +28,7 @@ public class MainScreen extends  Screen {
 
     @Override
     public Boolean Create() {
-        imgDraw = new Texture("Screenshot.png");
+        imgDraw = new Texture("Screenshot.png") ;
         BaseDrawable draw = new BaseDrawable();
         rDisplay.MoveLeft(ScreenX);
         rDisplay.StartAnimT(rFullscreen, Interpolator.Decelerate, 1000);
