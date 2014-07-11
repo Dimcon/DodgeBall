@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.util.HashMap;
 import java.util.Timer;
 
 /**
@@ -29,6 +30,15 @@ public class Rect {
         r = rightP;
         t = topP;
         b = bottomP;
+    }
+    public Rect(TouchHandler th,float leftP, float topP, float rightP, float bottomP) {
+        /* Define rectangle using a single procedure.  */
+        l = leftP;
+        r = rightP;
+        t = topP;
+        b = bottomP;
+        th.AddRect(this);
+        Touchable = true;
     }
     public Rect() {
     }
@@ -98,6 +108,51 @@ public class Rect {
         r = - 10;
         t = - 10;
         b = -10;
+    }
+
+    public boolean IsInside(Rect rTest) {
+        Boolean bResult = false;
+        if (RelativeToBottom) {
+            if (rTest.t > b && rTest.b < t ) {
+                bResult = true;
+            }
+        } else {
+            if (rTest.b > t && rTest.t < b ) {
+                bResult = true;
+            }
+        }
+        if (RelativeToLeft) {
+            if (!(rTest.l < r && rTest.r > l && bResult == true)) {
+                bResult = false;
+            }
+        } else {
+            if (!(rTest.l > r && rTest.r < l && bResult == true)) {
+                bResult = false;
+            }
+        }
+        return bResult;
+    }
+    public boolean IsInside(RectS rTest) {
+        Boolean bResult = false;
+        if (RelativeToBottom) {
+            if (rTest.t > b && rTest.b < t ) {
+                bResult = true;
+            }
+        } else {
+            if (rTest.b > t && rTest.t < b ) {
+                bResult = true;
+            }
+        }
+        if (RelativeToLeft) {
+            if (!(rTest.l < r && rTest.r > l && bResult == true)) {
+                bResult = false;
+            }
+        } else {
+            if (!(rTest.l > r && rTest.r < l && bResult == true)) {
+                bResult = false;
+            }
+        }
+        return bResult;
     }
 
     public void MoveLeft(float fAmount) {
@@ -227,10 +282,8 @@ public class Rect {
         rsb.Draw(tx,batch);
     }
 
-    /** Simple rectangle animations.
-      * Positioning is handled by rect but updating must be done by parent class
-      * in a consistent loop.
-      */
+    /** Simple rectangle animations. Positioning is handled by rect but updating must be done
+     * by parent class in a consistent loop.   */
     protected float pt, pb, pl, pr,     /* Post animation position.                 */
                     dt,db,dl,dr,        /* Distance to target animation position.   */
                     preA, distA,        /* Post animation and distance till  Alpha. */
@@ -333,7 +386,19 @@ public class Rect {
         pl = l;
         pr = r;
     }
+
+    /** Touch interface for Rect. Relies on a TouchHandler to record touches.
+     * */
+     boolean Touchable = true;
+    HashMap<Integer,Integer> PointerTrack = new HashMap<Integer, Integer>();
+    public void Touched(Integer PointerID) {
+
+    }
+    public void Touching(Integer PointerID) {
+
+    }
 }
+
 enum Interpolator {
     Accelerate, Decelerate, Constant
 }
@@ -477,6 +542,52 @@ class RectS {
             }
         }
     }
+
+    public boolean IsInside(Rect rTest) {
+        Boolean bResult = false;
+        if (RelativeToBottom) {
+            if (rTest.t() > b && rTest.b() < t ) {
+                bResult = true;
+            }
+        } else {
+            if (rTest.b() > t && rTest.t() < b ) {
+                bResult = true;
+            }
+        }
+        if (RelativeToLeft) {
+            if (!(rTest.l() < r && rTest.r() > l && bResult == true)) {
+                bResult = false;
+            }
+        } else {
+            if (!(rTest.l() > r && rTest.r() < l && bResult == true)) {
+                bResult = false;
+            }
+        }
+        return bResult;
+    }
+    public boolean IsInside(RectS rTest) {
+        Boolean bResult = false;
+        if (RelativeToBottom) {
+            if (rTest.t > b && rTest.b < t ) {
+                bResult = true;
+            }
+        } else {
+            if (rTest.b > t && rTest.t < b ) {
+                bResult = true;
+            }
+        }
+        if (RelativeToLeft) {
+            if (!(rTest.l < r && rTest.r > l && bResult == true)) {
+                bResult = false;
+            }
+        } else {
+            if (!(rTest.l > r && rTest.r < l && bResult == true)) {
+                bResult = false;
+            }
+        }
+        return bResult;
+    }
+
     public void Draw(Texture tx, SpriteBatch sBtch) {
         /** Draw using LIBGDX Spritebatch. LibGDX uses the bottom left of
          * the screen as the reference  */

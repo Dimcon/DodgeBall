@@ -18,7 +18,9 @@ public class ScreenManager {
     public void AddScreen(Screen NewScreen) {
         ScreenStore.put(NewScreen.Name,NewScreen);
     }
-
+    public void RemoveScreen(String sName) {
+        ScreenStore.remove(sName);
+    }
     public void Update(SpriteBatch batchP) {
         batch.Delta = UpdateRate/(System.nanoTime() - Now);
         Now = System.nanoTime();

@@ -37,7 +37,7 @@ public class SplashScreen extends Screen {
         rTest.DrawWithAlpha(img, batch.batch, rDisplay.a());
         rTest.RectCopy(rDisplay);
         Switch("Main",Dodgeball.Scrnman);
-        rDisplay.StartAnimT(new Rect(ScreenX,ScreenY,ScreenX * 2,0),Interpolator.Decelerate,5000);
+        rDisplay.StartAnimT(new Rect(ScreenX,ScreenY,ScreenX * 2,0),Interpolator.Decelerate,1000);
         return false;
     }
 

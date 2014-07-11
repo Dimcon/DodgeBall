@@ -15,7 +15,7 @@ public class MainScreen extends  Screen {
     public Boolean Create() {
         imgDraw = new Texture("Screenshot.png");
         rDisplay.MoveLeft(ScreenX);
-        rDisplay.StartAnimT(rFullscreen,Interpolator.Decelerate,5000);
+        rDisplay.StartAnimT(rFullscreen,Interpolator.Decelerate,1000);
         rDisplay.setAlpha(0f);
         rDisplay.StartAnimA(1f,Interpolator.Constant,1000);
         return super.Create();
@@ -23,19 +23,25 @@ public class MainScreen extends  Screen {
 
     @Override
     public Boolean AnimIn(DeltaBatch batch) {
-        rDisplay.DrawWithAlpha(imgDraw,batch.batch,rDisplay.a());
+        rDisplay.DrawWithAlpha(imgDraw, batch.batch, rDisplay.a());
         return super.AnimIn(batch);
     }
 
     @Override
     public Boolean Draw(DeltaBatch batch) {
-        rDisplay.DrawWithAlpha(imgDraw,batch.batch,rDisplay.a());
+        rDisplay.DrawWithAlpha(imgDraw, batch.batch, rDisplay.a());
+        if (Dodgeball.toucher.TouchMap.get(0) != null) {
+            rDisplay = new Rect(Dodgeball.toucher.TouchMap.get(0).TouchPosX - (ScreenX / 2),
+                    Dodgeball.toucher.TouchMap.get(0).TouchPosY + (ScreenY / 2),
+                    Dodgeball.toucher.TouchMap.get(0).TouchPosX + (ScreenX / 2),
+                    Dodgeball.toucher.TouchMap.get(0).TouchPosY - (ScreenY / 2));
+        }
         return super.Draw(batch);
     }
 
     @Override
     public Boolean AnimOut(DeltaBatch batch) {
-        rDisplay.DrawWithAlpha(imgDraw,batch.batch,rDisplay.a());
+        rDisplay.DrawWithAlpha(imgDraw, batch.batch, rDisplay.a());
         return super.AnimOut(batch);
     }
 
