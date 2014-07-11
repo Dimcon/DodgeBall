@@ -15,7 +15,7 @@ public class Dodgeball extends ApplicationAdapter implements InputProcessor {
     static ScreenManager Scrnman;
     static SplashScreen splash;
     static MainScreen main;
-    static TouchHandler toucher;
+    public static TouchHandler toucher;
 
 	@Override
 	public void create () {
@@ -36,9 +36,12 @@ public class Dodgeball extends ApplicationAdapter implements InputProcessor {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-        //rTest.Draw(img,batch);
         Scrnman.Update(batch);
 		batch.end();
+        if (main.DrawActors) {
+            main.stage.act();
+            main.stage.draw();
+        }
 	}
 
     @Override

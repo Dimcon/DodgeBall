@@ -31,15 +31,7 @@ public class Rect {
         t = topP;
         b = bottomP;
     }
-    public Rect(TouchHandler th,float leftP, float topP, float rightP, float bottomP) {
-        /* Define rectangle using a single procedure.  */
-        l = leftP;
-        r = rightP;
-        t = topP;
-        b = bottomP;
-        th.AddRect(this);
-        Touchable = true;
-    }
+
     public Rect() {
     }
 
@@ -122,11 +114,11 @@ public class Rect {
             }
         }
         if (RelativeToLeft) {
-            if (!(rTest.l < r && rTest.r > l && bResult == true)) {
+            if (!(rTest.l < r && rTest.r > l) && bResult) {
                 bResult = false;
             }
         } else {
-            if (!(rTest.l > r && rTest.r < l && bResult == true)) {
+            if (!(rTest.l > r && rTest.r < l) && bResult) {
                 bResult = false;
             }
         }
@@ -389,14 +381,16 @@ public class Rect {
 
     /** Touch interface for Rect. Relies on a TouchHandler to record touches.
      * */
-     boolean Touchable = true;
-    HashMap<Integer,Integer> PointerTrack = new HashMap<Integer, Integer>();
-    public void Touched(Integer PointerID) {
+     boolean    Touchable = true,
+                Touched = false;
 
+    public void TouchOn() {
+        Touched = true;
     }
-    public void Touching(Integer PointerID) {
+    public void TouchOff() {
+        Touched = false;
+    }
 
-    }
 }
 
 enum Interpolator {
