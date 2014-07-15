@@ -1,6 +1,8 @@
 package com.Dimcon;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import java.util.HashMap;
 
@@ -8,12 +10,22 @@ import java.util.HashMap;
  * Created by daimonsewell on 7/10/14.
  */
 public class ScreenManager {
-    public HashMap<String,Screen> ScreenStore = new HashMap<String, Screen>();
-    private long Now = 000000000;
-    private final long
+    HashMap<String,Screen> ScreenStore = new HashMap<String, Screen>();
+    long Now = 000000000;
+    final long
                 FramesPerSecond = 60,
                 UpdateRate = 100000000/FramesPerSecond;
-    public static DeltaBatch batch = new DeltaBatch();
+    static DeltaBatch batch = new DeltaBatch();
+    static ReseourceMan ResMan = new ReseourceMan();
+    static SpriteBatch Sbatch = new SpriteBatch();
+
+    ScreenManager(Screen First) {
+        Gdx.input.setInputProcessor(batch.toucher);
+        First.stage = CycleStage.Create;
+        AddScreen(First);
+        //Gdx.input.setInputProcessor(batch.DrawStage);
+        batch.batch = Sbatch;
+    }
 
     public void AddScreen(Screen NewScreen) {
         ScreenStore.put(NewScreen.Name,NewScreen);
@@ -21,38 +33,49 @@ public class ScreenManager {
     public void RemoveScreen(String sName) {
         ScreenStore.remove(sName);
     }
-    public void Update(SpriteBatch batchP) {
+
+
+    public void Update() {
+        batch.batch.begin();
         batch.Delta = UpdateRate/(System.nanoTime() - Now);
         Now = System.nanoTime();
-        batch.batch = batchP;
         //////// Iterate through each screen.
         for (String key : ScreenStore.keySet()) {
             switch (ScreenStore.get(key).stage) {
                 case Deactivated: default:
                     break;
                 case Create:
-                    if (ScreenStore.get(key).Create())
-                    {ScreenStore.get(key).stage = Stage.AnimateIn;};
+                    if (ScreenStore.get(key).Create(batch))
+                    {ScreenStore.get(key).stage = CycleStage .AnimateIn;}
                     break;
                 case AnimateIn:
+                    ScreenStore.get(key).BeforeAll(batch);
                     if (ScreenStore.get(key).AnimIn(batch))
-                    {ScreenStore.get(key).stage = Stage.Draw;}
+                    {ScreenStore.get(key).stage = CycleStage .Draw;} else
+                    ScreenStore.get(key).AfterAll(batch);
                     break;
                 case Draw:
+                    ScreenStore.get(key).BeforeAll(batch);
                     if (ScreenStore.get(key).Draw(batch))
-                    {ScreenStore.get(key).stage = Stage.AnimateOut;}
+                    {ScreenStore.get(key).stage = CycleStage .AnimateOut;}else
+                    ScreenStore.get(key).AfterAll(batch);
                     break;
                 case AnimateOut:
+                    ScreenStore.get(key).BeforeAll(batch);
                     if (ScreenStore.get(key).AnimOut(batch))
-                    {ScreenStore.get(key).stage = Stage.Destroy;}
+                    {ScreenStore.get(key).stage = CycleStage .Destroy;} else
+                    ScreenStore.get(key).AfterAll(batch);
                     break;
                 case Destroy:
-                    if (ScreenStore.get(key).Destroy())
-                    {ScreenStore.get(key).stage = Stage.Deactivated;}
+                    if (ScreenStore.get(key).Destroy(batch))
+                    {ScreenStore.get(key).stage = CycleStage .Deactivated;}
                     break;
             }
             ScreenStore.get(key).ResetUnits();
         }//////////////////////////////////
+        batch.batch.end();
+        batch.DrawStage.act();
+        batch.DrawStage.draw();
     }
 
 }
@@ -60,4 +83,6 @@ public class ScreenManager {
 class DeltaBatch {
     SpriteBatch batch;
     float Delta;
+    com.badlogic.gdx.scenes.scene2d.Stage DrawStage = new Stage();
+    TouchHandler toucher = new TouchHandler();
 }

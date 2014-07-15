@@ -31,6 +31,13 @@ public class Rect {
         t = topP;
         b = bottomP;
     }
+    public Rect(Rect rDisplay,float leftP, float topP, float rightP, float bottomP) {
+        /* Define rectangle using a single procedure in relation to its parent rDisplay.  */
+        l = rDisplay.l() + leftP;
+        r = rDisplay.l() +rightP;
+        t = rDisplay.b() +topP;
+        b = rDisplay.b() +bottomP;
+    }
 
     public Rect() {
     }
@@ -64,6 +71,22 @@ public class Rect {
     }
     public void sett(float top) {
         t = top;
+        Changed = true;
+    }
+    public void setl(Rect rDisplay,float left) {
+        l = rDisplay.l() + left;
+        Changed = true;
+    }
+    public void setr(Rect rDisplay,float right) {
+        r = rDisplay.l() + right;
+        Changed = true;
+    }
+    public void setb(Rect rDisplay,float bottom) {
+        b = rDisplay.b() + bottom;
+        Changed = true;
+    }
+    public void sett(Rect rDisplay,float top) {
+        t = rDisplay.b() + top;
         Changed = true;
     }
     public void setAlpha(float Alpha) {
@@ -381,16 +404,20 @@ public class Rect {
 
     /** Touch interface for Rect. Relies on a TouchHandler to record touches.
      * */
-     boolean    Touchable = true,
-                Touched = false;
 
-    public void TouchOn() {
-        Touched = true;
+    public int pointer;
+    public Boolean IsTouched() {
+        pointer = TouchHandler.isTouchingRect(this);
+        return TouchHandler.isTouchingRect(this) != -1;
     }
-    public void TouchOff() {
-        Touched = false;
+    public float TouchedX() {
+        pointer = TouchHandler.isTouchingRect(this);
+        return TouchHandler.TouchMap.get(pointer).TouchPosX;
     }
-
+    public float TouchedY() {
+        pointer = TouchHandler.isTouchingRect(this);
+        return TouchHandler.TouchMap.get(pointer).TouchPosY;
+    }
 }
 
 enum Interpolator {

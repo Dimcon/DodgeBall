@@ -14,8 +14,8 @@ public class SplashScreen extends Screen {
     }
 
     @Override
-    public Boolean Create() {
-        super.Create();
+    public Boolean Create(DeltaBatch batch) {
+        super.Create(batch);
         img = new Texture("badlogic.jpg");
         rDisplay = new Rect(ScreenX/2,ScreenY/2,ScreenX/2,ScreenY/2);
         rDisplay.StartAnimT(rFullscreen,Interpolator.Constant,1000);
@@ -29,7 +29,7 @@ public class SplashScreen extends Screen {
     public Boolean AnimIn(DeltaBatch batch) {
         rTest.DrawWithAlpha(img, batch.batch, rDisplay.a());
         rTest.RectCopy(rDisplay);
-        return (rDisplay.r() > ScreenX - 1);
+        return rDisplay.l() == 0;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class SplashScreen extends Screen {
     }
 
     @Override
-    public Boolean Destroy() {
-        return super.Destroy();
+    public Boolean Destroy(DeltaBatch batch) {
+        return super.Destroy(batch);
     }
 }

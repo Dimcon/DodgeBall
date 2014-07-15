@@ -27,88 +27,84 @@ public class MainScreen extends  Screen {
     boolean DrawActors = false;
 
     @Override
-    public Boolean Create() {
+    public void BeforeAll(DeltaBatch batch) {
+        super.BeforeAll(batch);
+        //UpdateButton("sTest", rButton);
+    }
+
+    @Override
+    public void AfterAll(DeltaBatch batch) {
+        rButton.Draw(ReseourceMan.Get("Norm"),batch.batch);
+        super.AfterAll(batch);
+
+    }
+
+    @Override
+    public Boolean Create(DeltaBatch batch) {
         imgDraw = new Texture("Screenshot.png");
-        BaseDrawable draw = new BaseDrawable();
         rDisplay.MoveLeft(ScreenX);
         rDisplay.StartAnimT(rFullscreen, Interpolator.Decelerate, 1000);
         rDisplay.setAlpha(0f);
         rDisplay.StartAnimA(1f, Interpolator.Constant, 1000);
-        rButton = new Rect(rDisplay.l() + 10*fXunit,rDisplay.b() + 60*fYunit,rDisplay.l() + 90*fXunit,rDisplay.b() + 40*fYunit);
-        font = new BitmapFont();
-        skin = new Skin();
-        skin.add("Draw",imgDraw);
-        tbtn = new TextButton("Start",new TextButton.TextButtonStyle(skin.getDrawable("Draw"),
-                skin.getDrawable("Draw"),
-                skin.getDrawable("Draw"),font));
-        stage = new Stage();
-        stage.addActor(tbtn);
-        Gdx.input.setInputProcessor(stage);
-        tbtn.setPosition(rButton.l(),rButton.b());
-        tbtn.setHeight(rButton.height());
-        tbtn.setWidth(rButton.width());
-        tbtn.addListener(new ClickListener() {
-            @Override
-            public void cancel() {
-                super.cancel();
+        rButton = new Rect(rDisplay,20*fXunit,40*fYunit,50*fXunit,20*fYunit);
+        ReseourceMan.AddImage("Norm","Screenshot.png");
+        /*AddButton("sTest", null, "Start", rButton, "Norm", "Norm", "Norm", new ClickListener() {
+
+            *//*@Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                rButton.setl(rDisplay, x - (20 * fXunit));
+                rButton.setr(rDisplay, x + (20 * fXunit));
+                rButton.sett(rDisplay, y + (20 * fXunit));
+                rButton.setb(rDisplay, y - (20 * fXunit));
+                return super.touchDown(event, x, y, pointer, button);
             }
 
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                rButton.MoveLeft(5*fXunit);
-            }
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                rButton.setl(rDisplay, x - (20 * fXunit));
+                rButton.setr(rDisplay, x + (20 * fXunit));
+                rButton.sett(rDisplay, y + (20 * fXunit));
+                rButton.setb(rDisplay, y - (20 * fXunit));
+                super.touchDragged(event, x, y, pointer);}*//*
 
-            @Override
-            public boolean isOver(Actor actor, float x, float y) {
-                return super.isOver(actor, x, y);
-            }
 
             @Override
             public boolean isPressed() {
                 return super.isPressed();
             }
-        });
-        DrawActors = true;
-        return super.Create();
+        });*/
+        return super.Create(batch);
     }
 
     @Override
     public Boolean AnimIn(DeltaBatch batch) {
         rDisplay.DrawWithAlpha(imgDraw, batch.batch, rDisplay.a());
-        rButton = new Rect(rDisplay.l() + 10*fXunit,rDisplay.b() + 60*fYunit,rDisplay.l() + 90*fXunit,rDisplay.b() + 40*fYunit);
-        tbtn.setPosition(rButton.l(),rButton.b());
-        tbtn.setHeight(rButton.height());
-        tbtn.setWidth(rButton.width());
+        rButton = new Rect(rDisplay, 10*fXunit,60*fYunit,90*fXunit,40*fYunit);
         return super.AnimIn(batch);
     }
 
     @Override
     public Boolean Draw(DeltaBatch batch) {
         rDisplay.DrawWithAlpha(imgDraw, batch.batch, rDisplay.a());
-        /*if (Dodgeball.toucher.TouchMap.get(0) != null) {
-            rDisplay = new Rect(Dodgeball.toucher.TouchMap.get(0).TouchPosX - (ScreenX / 2),
-                    Dodgeball.toucher.TouchMap.get(0).TouchPosY + (ScreenY / 2),
-                    Dodgeball.toucher.TouchMap.get(0).TouchPosX + (ScreenX / 2),
-                    Dodgeball.toucher.TouchMap.get(0).TouchPosY - (ScreenY / 2));
-        }*/
-        //rButton = new Rect(rDisplay.l() + 10*fXunit,rDisplay.b() + 60*fYunit,rDisplay.l() + 90*fXunit,rDisplay.b() + 40*fYunit);
-        tbtn.setPosition(rButton.l(),rButton.b());
-        tbtn.setHeight(rButton.height());
-        tbtn.setWidth(rButton.width());
+        if (rButton.IsTouched()) {
+            rButton.setl(rDisplay, rButton.TouchedX()- (20*fXunit));
+            rButton.setr(rDisplay, rButton.TouchedX() + (20 * fXunit));
+            rButton.sett(rDisplay, rButton.TouchedY() + (20 * fXunit));
+            rButton.setb(rDisplay, rButton.TouchedY() - (20 * fXunit));
+        }
         return super.Draw(batch);
     }
 
     @Override
     public Boolean AnimOut(DeltaBatch batch) {
         rDisplay.DrawWithAlpha(imgDraw, batch.batch, rDisplay.a());
-        rButton = new Rect(rDisplay.l() + 10*fXunit,rDisplay.b() + 60*fYunit,rDisplay.l() + 90*fXunit,rDisplay.b() + 40*fYunit);
-        rButton.DrawWithAlpha(imgDraw,batch.batch,(Dodgeball.toucher.isTouchingRect(rButton) )? 0f: 0.5f);
+        rButton = new Rect(rDisplay, 10*fXunit,60*fYunit,90*fXunit,40*fYunit);
+        rButton.DrawWithAlpha(imgDraw,batch.batch,(batch.toucher.isTouchingRect(rButton) != -1)? 0f: 0.5f);
         return super.AnimOut(batch);
     }
 
     @Override
-    public Boolean Destroy() {
-        return super.Destroy();
+    public Boolean Destroy(DeltaBatch batch) {
+        return super.Destroy(batch);
     }
 }
