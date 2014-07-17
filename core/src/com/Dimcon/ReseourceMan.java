@@ -35,6 +35,14 @@ public class ReseourceMan {
         }
         return null;
     }
+    public void DisposeAll() {
+        for (String key: ImageStore.keySet()) {
+            ImageStore.get(key).dispose();
+        }
+        for (String key: ImageStoreLarge.keySet()) {
+            ImageStoreLarge.get(key).dispose();
+        }
+    }
 }
 
 class Resource {
@@ -52,7 +60,7 @@ class Resource {
     public void GetBack() {
         imgResource = new Texture(sPath);
     }
-    public void Dispose() {
+    public void dispose() {
         imgResource.dispose();
     }
 }

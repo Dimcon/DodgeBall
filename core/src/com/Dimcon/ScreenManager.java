@@ -73,9 +73,11 @@ public class ScreenManager {
             }
             ScreenStore.get(key).ResetUnits();
         }//////////////////////////////////
+
         batch.batch.end();
         batch.DrawStage.act();
         batch.DrawStage.draw();
+
     }
 
 }

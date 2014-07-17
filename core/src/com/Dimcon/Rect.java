@@ -17,7 +17,7 @@ import java.util.Timer;
 public class Rect {
     /** Rectangle with basic animation support
      *  Has a higher memory footprint than RectS (Very basic Rect)*/
-    /* top,bottom,left,right */
+    /** top,bottom,left,right */
      private float
                 t,b,l,r,a = 1f;
     private Boolean RelativeToBottom = true,
@@ -25,14 +25,14 @@ public class Rect {
                     Changed = true,
                     Debugg = false;
     public Rect(float leftP, float topP, float rightP, float bottomP) {
-        /* Define rectangle using a single procedure.  */
+        /** Define rectangle using a single procedure.  */
         l = leftP;
         r = rightP;
         t = topP;
         b = bottomP;
     }
     public Rect(Rect rDisplay,float leftP, float topP, float rightP, float bottomP) {
-        /* Define rectangle using a single procedure in relation to its parent rDisplay.  */
+        /** Define rectangle using a single procedure in relation to its parent rDisplay.  */
         l = rDisplay.l() + leftP;
         r = rDisplay.l() +rightP;
         t = rDisplay.b() +topP;
@@ -94,15 +94,15 @@ public class Rect {
     }
 
     public float CenterX() {
-    /* Get center of Rect (horizontal) */
+    /** Get center of Rect (horizontal) */
             return (l + r)/2;
     }
     public float CenterY() {
-    /* Get center of Rect (Vertical)   */
+    /** Get center of Rect (Vertical)   */
         return (t + b)/2;
     }
     public float width() {
-    /* Get width of Rect   */
+    /** Get width of Rect   */
         if (RelativeToLeft) {
             return r - l;
         } else {
@@ -207,16 +207,16 @@ public class Rect {
         }
     }
     public void RectCopy(Rect rP) {
-        /* Copy numerical values of given rect.
-         * Saying Rect1 = Rect2 seems to make Rect1 point to Rect2 instead of
-         * just copying it.    */
+        /** Copy numerical values of given rect.
+         *  Saying Rect1 = Rect2 seems to make Rect1 point to Rect2 instead of
+         *  just copying it.    */
         l = rP.l;
         r = rP.r;
         t = rP.t;
         b = rP.b;
     }
     public void CopySquare(Rect rP,float rPadding) {
-        /** Turn into square as large as possible within rectangle(
+        /** Turn into square as large as possible within rectangle
          *  - - - - - - -_-_-_-_-_- - - - - - - -
          * | Rectangle  | New     |              |
          * |            | Square  |              |
@@ -270,7 +270,7 @@ public class Rect {
         } else DrawWithAlpha(tx,sBtch,a);
     }
     public void DrawWithAlpha(Texture tx,SpriteBatch sBtch, float fAlpha) {
-    /* Draw using LIBGDX Spritebatch. LibGDX uses the bottom left of
+    /** Draw using LIBGDX Spritebatch. LibGDX uses the bottom left of
      * the screen as the reference  */
         Color newcol = sBtch.getColor();
         sBtch.setColor(1,1,1,fAlpha);
@@ -317,14 +317,13 @@ public class Rect {
     public void StartAnimT(Rect rDest,Interpolator InterpolatorP,float Timemillis) {
         SetPostAnim();
         Interp = InterpolatorP;
-
-        /* Amount to increase the AnimTime by on each cycle, assuming 60fps
-        *  Target Angle (90 degrees, 0.5 radians) divided by
-        *  (Target time in milliseconds / Milliseconds each cycle) */
+        /** Amount to increase AnimTime by on each cycle, assuming Animate will be
+         * called 60fps. Target Angle (90 degrees, 0.5 radians) divided by
+         *  (Target time in milliseconds / Milliseconds each cycle) */
         AnimRate = (float)(0.5f * Math.PI) / (Timemillis/TimePerCycle);
         AnimTime = 0;   /* Start the clock at 0 */
         animTranslate = true;
-        /* Store requested ending values to ensure the animation ends where
+        /** Store the requested ending values to ensure the animation ends where
         *  requested.   */
         rsDest = new RectS(rDest.l,rDest.t,rDest.r,rDest.b);
         dt = rDest.t - t;
@@ -335,7 +334,7 @@ public class Rect {
     public void StartAnimA(float TargetAlpha,Interpolator InterpolatorP,float Timemillis) {
         preA = a;
         AlphaInterp = InterpolatorP;
-        /* Refer to StartAnimT ^^  */
+        /** Refer to StartAnimT ^^  */
         AlphaAnimRate = (float)(0.5f * Math.PI) / (Timemillis/TimePerCycle);
         AlphaAnimTime = 0;
         animAlpha = true;
@@ -343,6 +342,11 @@ public class Rect {
     }
 
     public void Animate() {
+        /** The distance that the rect needs to be moved is kept as a whole. AnimTime
+         *  is 90 degrees of a circle. AnimTime is increased at a constant rate so that
+         *  it reaches 90 degrees in the time asked for. Using Sin and Cos on the 'angle'
+         *  returns a value that either increases (Cos) or decreases (Sin) with acceleration
+         *  */
         if (animTranslate) {
             float fMult = 0; /* Value to multiply the final distance by*/
             switch (Interp) {
@@ -396,27 +400,74 @@ public class Rect {
     }
 
     private void SetPostAnim() {
+        /** Sets the values of the rect before it is animated. */
         pt = t;
         pb = b;
         pl = l;
         pr = r;
     }
 
-    /** Touch interface for Rect. Relies on a TouchHandler to record touches.
+    /** Touch interface for Rect. Relies on TouchHandler to record touches.
+     *  isTouched will be true if the current rect has been touched and is now
+     *  under the users pointer. isTouched will be true if there is currently a
+     *  pointer in this rect, regardless of where the pointer touched first.
      * */
 
     public int pointer;
     public Boolean IsTouched() {
-        pointer = TouchHandler.isTouchingRect(this);
-        return TouchHandler.isTouchingRect(this) != -1;
+        /** AHHOC (Annoyingly Hard, I was high on coffee when writing this) -Naos
+         *  If touchHandler reports a new touch occurring in this rect and there
+         *  is no currently assigned pointer, then assign that pointer to this rect.
+         *  If this rects assigned pointer isn't in touchHandlers system, it's safe to assume
+         *  this rect has been abandoned and should report as alone (-1).
+         * */
+
+        if (TouchHandler.TouchDownAtRect(this) > -1 && pointer == -1) {
+            pointer = TouchHandler.TouchDownAtRect(this);
+        }
+        if (pointer > -1 && !TouchHandler.PointerIsHere(pointer)) {
+            pointer = -1;
+        }
+        return pointer != -1;
     }
     public float TouchedX() {
-        pointer = TouchHandler.isTouchingRect(this);
-        return TouchHandler.TouchMap.get(pointer).TouchPosX;
+        /** Reports the X coord of the pointer assigned to the current Rect. Returns
+         * -1 if this rect is lonely (no assigned pointers)*/
+        if (IsTouched()) {
+            return TouchHandler.TouchMap.get(pointer).TouchPosX;
+        }
+        return -1;
     }
     public float TouchedY() {
-        pointer = TouchHandler.isTouchingRect(this);
-        return TouchHandler.TouchMap.get(pointer).TouchPosY;
+        /** Reports the Y coord of the pointer assigned to the current Rect. Returns
+         * -1 if this rect is lonely (no assigned pointers)*/
+        if (IsTouched()) {
+            return TouchHandler.TouchMap.get(pointer).TouchPosY;
+        }
+        return -1;
+    }
+    public Boolean IsTouching() {
+        /** This makes the rect desperate. It will report true if there is ANY
+         *  touch within the rect. */
+        return TouchHandler.isTouchingRect(this) != -1;
+    }
+    public float TouchingX() {
+        /** Reports the X coord of a pointer here. Any pointer in the vicinity of this
+         *  Rect will count as a touch, whether TouchHandler reports the touchdown
+         *  here or not. */
+            int Lpointer = TouchHandler.isTouchingRect(this);
+            if (TouchHandler.TouchMap.get(Lpointer) == null)
+                return -1;
+            else return TouchHandler.TouchMap.get(Lpointer).TouchPosX;
+    }
+    public float TouchingY() {
+        /** Reports the Y coord of a pointer here. Any pointer in the vicinity of this
+         *  Rect will count as a touch, whether TouchHandler reports the touchdown
+         *  here or not. */
+        int Lpointer = TouchHandler.isTouchingRect(this);
+        if (TouchHandler.TouchMap.get(Lpointer) == null)
+            return -1;
+        else return TouchHandler.TouchMap.get(Lpointer).TouchPosY;
     }
 }
 

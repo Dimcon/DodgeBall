@@ -46,14 +46,14 @@ public class MainScreen extends  Screen {
         rDisplay.StartAnimT(rFullscreen, Interpolator.Decelerate, 1000);
         rDisplay.setAlpha(0f);
         rDisplay.StartAnimA(1f, Interpolator.Constant, 1000);
-        rButton = new Rect(rDisplay,20*fXunit,40*fYunit,50*fXunit,20*fYunit);
+        rButton = new Rect(20*fXunit,40*fYunit,50*fXunit,20*fYunit);
         ReseourceMan.AddImage("Norm","Screenshot.png");
-        /*AddButton("sTest", null, "Start", rButton, "Norm", "Norm", "Norm", new ClickListener() {
+        AddButton("sTest", null, "Start", rButton, "Norm", "Norm", "Norm", new ClickListener() {
 
-            *//*@Override
+            @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                rButton.setl(rDisplay, x - (20 * fXunit));
-                rButton.setr(rDisplay, x + (20 * fXunit));
+                rButton.setl(x - (20 * fXunit));
+                rButton.setr(x + (20 * fXunit));
                 rButton.sett(rDisplay, y + (20 * fXunit));
                 rButton.setb(rDisplay, y - (20 * fXunit));
                 return super.touchDown(event, x, y, pointer, button);
@@ -65,14 +65,14 @@ public class MainScreen extends  Screen {
                 rButton.setr(rDisplay, x + (20 * fXunit));
                 rButton.sett(rDisplay, y + (20 * fXunit));
                 rButton.setb(rDisplay, y - (20 * fXunit));
-                super.touchDragged(event, x, y, pointer);}*//*
+                super.touchDragged(event, x, y, pointer);}
 
 
             @Override
             public boolean isPressed() {
                 return super.isPressed();
             }
-        });*/
+        });
         return super.Create(batch);
     }
 
@@ -80,6 +80,7 @@ public class MainScreen extends  Screen {
     public Boolean AnimIn(DeltaBatch batch) {
         rDisplay.DrawWithAlpha(imgDraw, batch.batch, rDisplay.a());
         rButton = new Rect(rDisplay, 10*fXunit,60*fYunit,90*fXunit,40*fYunit);
+        rButton.DrawWithAlpha(imgDraw,batch.batch,(batch.toucher.isTouchingRect(rButton) != -1)? 0f: 0.5f);
         return super.AnimIn(batch);
     }
 
@@ -92,6 +93,7 @@ public class MainScreen extends  Screen {
             rButton.sett(rDisplay, rButton.TouchedY() + (20 * fXunit));
             rButton.setb(rDisplay, rButton.TouchedY() - (20 * fXunit));
         }
+        rButton.DrawWithAlpha(imgDraw,batch.batch,(rButton.IsTouched())? 0.2f: 0.5f);
         return super.Draw(batch);
     }
 
