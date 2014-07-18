@@ -47,6 +47,15 @@ public class Rect {
         Changed = true;
 
     }
+    public void Update(Rect rDisplay,float leftP, float topP, float rightP, float bottomP) {
+        /** Define rectangle using a single procedure in relation to its parent rDisplay.  */
+        l = rDisplay.l() + leftP;
+        r = rDisplay.l() +rightP;
+        t = rDisplay.b() +topP;
+        b = rDisplay.b() +bottomP;
+        Changed = true;
+
+    }
 
     public Rect() {
     }
@@ -284,6 +293,9 @@ public class Rect {
     }
     public void Draw(Texture tx, SpriteBatch sBtch) {
          DrawWithAlpha(tx,sBtch,a);
+    }
+    public void Draw(Texture tx, SpriteBatch sBtch,float fAlphaP) {
+        DrawWithAlpha(tx,sBtch,fAlphaP);
     }
     public void DrawWithAlpha(Texture tx,SpriteBatch sBtch, float fAlpha) {
     /** Draw using LIBGDX Spritebatch. LibGDX uses the bottom left of

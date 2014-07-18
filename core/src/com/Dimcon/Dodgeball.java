@@ -13,8 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public class Dodgeball extends ApplicationAdapter {
 	SpriteBatch batch;
     static ScreenManager Scrnman;
-    static SplashScreen splash;
-    static MainScreen main;
+    public static SplashScreen splash;
+    public static GameScreen gamescreen;
+    public static OverlayScreen overlay;
+    public static MainScreen main;
 
 	@Override
 	public void create () {
@@ -22,8 +24,13 @@ public class Dodgeball extends ApplicationAdapter {
         Gdx.graphics.setContinuousRendering(true);
         splash = new SplashScreen();
         main = new MainScreen();
+        gamescreen = new GameScreen();
+        overlay = new OverlayScreen();
         Scrnman = new ScreenManager(splash);
         Scrnman.AddScreen(main);
+        Scrnman.AddScreen(gamescreen);
+        Scrnman.AddScreen(overlay);
+        overlay.stage = CycleStage.Create;
         Rect.setDebug(true);
 	}
 
