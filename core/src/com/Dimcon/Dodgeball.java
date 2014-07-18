@@ -24,7 +24,7 @@ public class Dodgeball extends ApplicationAdapter {
         main = new MainScreen();
         Scrnman = new ScreenManager(splash);
         Scrnman.AddScreen(main);
-
+        Rect.setDebug(true);
 	}
 
 	@Override

@@ -93,30 +93,29 @@ public class Screen {
     }
 
     /** Hashmap of buttons to simplify adding buttons to the screen. */
-    private HashMap<String,Button> ButtonStore = new HashMap<String, Button>();
+    public HashMap<String,ButtonRect> ButtonStore = new HashMap<String, ButtonRect>();
     private BitmapFont dfont = new BitmapFont();
 
     public void AddButton(String sName,BitmapFont font,String sLabel,Rect rButton,String sResNorm,String sResHov,String sResDown,ClickListener clicker) {
         Skin skin = new Skin();
-        skin.add("Norm",ReseourceMan.Get(sResNorm));
-        skin.add("Down",ReseourceMan.Get(sResDown));
-        skin.add("Hov",ReseourceMan.Get(sResHov));
-        Button tbtn = new TextButton(sLabel,new TextButton.TextButtonStyle(
-                skin.getDrawable("Norm"),
-                skin.getDrawable("Down"),
-                skin.getDrawable("Hov"),(font == null)?dfont : font));
-        skin.dispose();
-        tbtn.setPosition(rButton.l(),rButton.b());
+        skin.add("Norm", ResourceMan.Get(sResNorm));
+        skin.add("Down", ResourceMan.Get(sResDown));
+        skin.add("Hov", ResourceMan.Get(sResHov));
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.font = (font != null) ? font : dfont;
+        textButtonStyle.up = skin.getDrawable("Norm");
+        textButtonStyle.down = skin.getDrawable("Down");
+        textButtonStyle.checked = skin.getDrawable("Hov");
+        Button tbtn = new TextButton("Button1", textButtonStyle);
+        tbtn.setPosition(rButton.l(), rButton.b());
         tbtn.setHeight(rButton.height());
         tbtn.setWidth(rButton.width());
         tbtn.addListener(clicker);
-        ButtonStore.put(sName,tbtn);
-        ScreenManager.batch.DrawStage.addActor(ButtonStore.get(sName));
+        ButtonStore.put(sName, new ButtonRect(tbtn, rButton));
+        ScreenManager.batch.DrawStage.addActor(ButtonStore.get(sName).button);
     }
-    public void UpdateButton(String sName, Rect rUpdate) {
-        ButtonStore.get(sName).setPosition(rUpdate.l(),rUpdate.b());
-        ButtonStore.get(sName).setHeight(rUpdate.height());
-        ButtonStore.get(sName).setWidth(rUpdate.width());
+    public void UpdateButton(String sName, float LfXunits, float TfYunits,float RfXUnits, float bfYunits) {
+        ButtonStore.get(sName).rLayout = new Rect(LfXunits*fXunit,TfYunits*fYunit,RfXUnits*fXunit,bfYunits*fYunit);
     }
     public void RemoveButton(String sName) {
         ButtonStore.remove(sName);
@@ -125,4 +124,18 @@ public class Screen {
 
 enum CycleStage {
     Deactivated, Create, AnimateIn, Draw, AnimateOut, Destroy;
+}
+class ButtonRect {
+    Button button;
+    Rect rLayout;
+
+    ButtonRect(Button button, Rect rLayout) {
+        this.button = button;
+        this.rLayout = rLayout;
+    }
+    public void UpdatePos(Rect rDisplayP) {
+        button.setPosition(rDisplayP.l() + rLayout.l(),rDisplayP.b() + rLayout.b());
+        button.setWidth(rLayout.r() - rLayout.l());
+        button.setHeight(rLayout.t() - rLayout.b());
+    }
 }

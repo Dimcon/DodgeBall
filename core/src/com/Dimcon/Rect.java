@@ -22,14 +22,21 @@ public class Rect {
                 t,b,l,r,a = 1f;
     private Boolean RelativeToBottom = true,
                     RelativeToLeft = true,
-                    Changed = true,
-                    Debugg = false;
+                    Changed = true;
+    static boolean Debugg = false;
+
+    public static void setDebug(Boolean Value) {
+        Debugg = Value;
+    }
+
     public Rect(float leftP, float topP, float rightP, float bottomP) {
         /** Define rectangle using a single procedure.  */
         l = leftP;
         r = rightP;
         t = topP;
         b = bottomP;
+        Changed = true;
+
     }
     public Rect(Rect rDisplay,float leftP, float topP, float rightP, float bottomP) {
         /** Define rectangle using a single procedure in relation to its parent rDisplay.  */
@@ -37,6 +44,8 @@ public class Rect {
         r = rDisplay.l() +rightP;
         t = rDisplay.b() +topP;
         b = rDisplay.b() +bottomP;
+        Changed = true;
+
     }
 
     public Rect() {
@@ -119,6 +128,8 @@ public class Rect {
     }
     public void OffScreen() {
     /* Move all points to negative. */
+        Changed = true;
+
         l = - 10;
         r = - 10;
         t = - 10;
@@ -171,6 +182,8 @@ public class Rect {
     }
 
     public void MoveLeft(float fAmount) {
+        Changed = true;
+
         if (RelativeToLeft) {
             r = r - fAmount;
             l = l - fAmount;
@@ -180,6 +193,8 @@ public class Rect {
         }
     }
     public void MoveDown(float fAmount) {
+        Changed = true;
+
         if (RelativeToBottom) {
             t = t - fAmount;
             b = b - fAmount;
@@ -189,6 +204,8 @@ public class Rect {
         }
     }
     public void MoveRight(float fAmount) {
+        Changed = true;
+
         if (RelativeToLeft) {
             r = r + fAmount;
             l = l + fAmount;
@@ -198,6 +215,8 @@ public class Rect {
         }
     }
     public void Moveup(float fAmount) {
+        Changed = true;
+
         if (RelativeToBottom) {
             t = t - fAmount;
             b = b - fAmount;
@@ -214,8 +233,10 @@ public class Rect {
         r = rP.r;
         t = rP.t;
         b = rP.b;
+        Changed = true;
     }
     public void CopySquare(Rect rP,float rPadding) {
+        Changed = true;
         /** Turn into square as large as possible within rectangle
          *  - - - - - - -_-_-_-_-_- - - - - - - -
          * | Rectangle  | New     |              |
@@ -262,20 +283,22 @@ public class Rect {
         }
     }
     public void Draw(Texture tx, SpriteBatch sBtch) {
+         DrawWithAlpha(tx,sBtch,a);
+    }
+    public void DrawWithAlpha(Texture tx,SpriteBatch sBtch, float fAlpha) {
+    /** Draw using LIBGDX Spritebatch. LibGDX uses the bottom left of
+     * the screen as the reference  */
         if (Debugg) {
             Color newcol = sBtch.getColor();
             sBtch.setColor(1,1,1,1);
             DrawOutLine(tx, sBtch);
             sBtch.setColor(newcol);
-        } else DrawWithAlpha(tx,sBtch,a);
-    }
-    public void DrawWithAlpha(Texture tx,SpriteBatch sBtch, float fAlpha) {
-    /** Draw using LIBGDX Spritebatch. LibGDX uses the bottom left of
-     * the screen as the reference  */
-        Color newcol = sBtch.getColor();
-        sBtch.setColor(1,1,1,fAlpha);
-        sBtch.draw(tx, l, b, width(), height());
-        sBtch.setColor(newcol);
+        } else {
+            Color newcol = sBtch.getColor();
+            sBtch.setColor(1, 1, 1, fAlpha);
+            sBtch.draw(tx, l, b, width(), height());
+            sBtch.setColor(newcol);
+        }
     }
 
     private RectS rsl = new RectS(),rst = new RectS(),rsr= new RectS(),rsb= new RectS();

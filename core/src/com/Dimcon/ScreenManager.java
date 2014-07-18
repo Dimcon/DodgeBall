@@ -16,7 +16,7 @@ public class ScreenManager {
                 FramesPerSecond = 60,
                 UpdateRate = 100000000/FramesPerSecond;
     static DeltaBatch batch = new DeltaBatch();
-    static ReseourceMan ResMan = new ReseourceMan();
+    static ResourceMan ResMan = new ResourceMan();
     static SpriteBatch Sbatch = new SpriteBatch();
 
     ScreenManager(Screen First) {
@@ -72,6 +72,9 @@ public class ScreenManager {
                     break;
             }
             ScreenStore.get(key).ResetUnits();
+            for (String key2 : ScreenStore.get(key).ButtonStore.keySet()) {
+                ScreenStore.get(key).ButtonStore.get(key2).UpdatePos(ScreenStore.get(key).rDisplay);
+            }
         }//////////////////////////////////
 
         batch.batch.end();
