@@ -31,7 +31,7 @@ public class OverlayScreen extends Screen {
 
     @Override
     public Boolean AnimIn(DeltaBatch batch) {
-        rPlayer.Update(rDisplay, 45*fXunit,(20*fYunit) + (10*fXunit),55*fXunit,(20*fYunit));
+        rPlayer.Update(rDisplay, 45*fXunit,(5*fYunit) + (10*fXunit),55*fXunit,(5*fYunit));
         rHandle.RectCopy(rPlayer);
         rPlayer.Draw(ResourceMan.Get("Player"),batch.batch,fAlpha);
         rHandle.Draw(ResourceMan.Get("Handle"),batch.batch,fAlpha);

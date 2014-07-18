@@ -74,13 +74,12 @@ public class MainScreen extends  Screen {
             HandleY = Dodgeball.overlay.rHandle.TouchedY() - Dodgeball.overlay.rHandle.b();
         }
         if (Dodgeball.overlay.rHandle.IsTouched()) {
-            touchingHandle = true;
             Dodgeball.overlay.rHandle.setb(rDisplay, Dodgeball.overlay.rHandle.TouchedY() - HandleY);
             Dodgeball.overlay.rHandle.sett(rDisplay, Dodgeball.overlay.rHandle.b() + 10 * fXunit);
         }
-        if (Dodgeball.overlay.rHandle.b() < 20*fYunit && touchingHandle) {
-            Dodgeball.overlay.rHandle.setb(rDisplay, 20*fYunit);
-            Dodgeball.overlay.rHandle.sett(rDisplay, Dodgeball.overlay.rHandle.b() + 10 * fXunit);
+        if (Dodgeball.overlay.rHandle.b() < rReturn.b() && touchingHandle) {
+            Dodgeball.overlay.rHandle.setb(rReturn.b());
+            Dodgeball.overlay.rHandle.sett(Dodgeball.overlay.rHandle.b() + 10 * fXunit);
         }
         rDisplay.DrawWithAlpha(ResourceMan.Get("Screen"), batch.batch, rDisplay.a());
         Dodgeball.overlay.rHandle.Animate();
