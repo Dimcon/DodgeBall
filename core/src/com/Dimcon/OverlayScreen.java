@@ -24,25 +24,27 @@ public class OverlayScreen extends Screen {
         rPlayer = new Rect(rDisplay, 45*fXunit,(20*fYunit) + (10*fXunit),55*fXunit,(20*fYunit));
         rHandle = new Rect();
         rHandle.RectCopy(rPlayer);
-        ResourceMan.AddImage("Player","badlogic.jpg");
-        ResourceMan.AddImage("Handle","badlogic.jpg");
+        ResMan.AddRect("Player",rPlayer);
+        ResMan.AddRect("Handle",rHandle);
+        ResMan.AddImage("Player","badlogic.jpg");
+        ResMan.AddImage("Handle","badlogic.jpg");
         return super.Create(batch);
     }
 
     @Override
     public Boolean AnimIn(DeltaBatch batch) {
-        rPlayer.Update(rDisplay, 45*fXunit,(5*fYunit) + (10*fXunit),55*fXunit,(5*fYunit));
-        rHandle.RectCopy(rPlayer);
-        rPlayer.Draw(ResourceMan.Get("Player"),batch.batch,fAlpha);
-        rHandle.Draw(ResourceMan.Get("Handle"),batch.batch,fAlpha);
+        ResMan.GetRect("Player").Update(rDisplay, 45*fXunit,(5*fYunit) + (10*fXunit),55*fXunit,(5*fYunit));
+        ResMan.GetRect("Handle").RectCopy(rPlayer);
+        ResMan.GetRect("Player").Draw(ResMan.Get("Player"),batch.batch,fAlpha);
+        ResMan.GetRect("Handle").Draw(ResMan.Get("Handle"),batch.batch,fAlpha);
         return super.AnimIn(batch);
     }
 
     @Override
     public Boolean Draw(DeltaBatch batch) {
-        rPlayer.Update(rDisplay, 45*fXunit,(20*fYunit) + (10*fXunit),55*fXunit,(20*fYunit));
-        rPlayer.Draw(ResourceMan.Get("Player"),batch.batch,fAlpha);
-        rHandle.Draw(ResourceMan.Get("Handle"),batch.batch,fAlpha);
+        ResMan.GetRect("Player").Update(rDisplay, 45*fXunit,(5*fYunit) + (10*fXunit),55*fXunit,(5*fYunit));
+        ResMan.GetRect("Player").Draw(ResMan.Get("Player"),batch.batch,fAlpha);
+        ResMan.GetRect("Handle").Draw(ResMan.Get("Handle"),batch.batch,fAlpha);
         return super.Draw(batch);
     }
 

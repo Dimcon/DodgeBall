@@ -10,13 +10,13 @@ import java.util.HashMap;
  * Created by daimonsewell on 7/10/14.
  */
 public class ScreenManager {
-    HashMap<String,Screen> ScreenStore = new HashMap<String, Screen>();
+    static HashMap<String,Screen> ScreenStore = new HashMap<String, Screen>();
     long Now = 000000000;
     final long
                 FramesPerSecond = 60,
                 UpdateRate = 100000000/FramesPerSecond;
     static DeltaBatch batch = new DeltaBatch();
-    static ResourceMan ResMan = new ResourceMan();
+    static ResMan ResMan = new ResMan();
     static SpriteBatch Sbatch = new SpriteBatch();
 
     ScreenManager(Screen First) {
@@ -34,6 +34,15 @@ public class ScreenManager {
         ScreenStore.remove(sName);
     }
 
+    public void StartScreen(String sScreen) {
+        ScreenStore.get(sScreen).stage = CycleStage .Create;
+    }
+    public void EndScreen(String sScreen) {
+        ScreenStore.get(sScreen).stage = CycleStage .AnimateOut;
+    }
+    public void KillScreen(String sScreen) {
+        ScreenStore.get(sScreen).stage = CycleStage .Destroy;
+    }
 
     public void Update() {
         batch.batch.begin();

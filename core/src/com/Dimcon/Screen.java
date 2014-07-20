@@ -52,6 +52,15 @@ public class Screen {
         stage = CycleStage .AnimateOut;
         screenManager.ScreenStore.get(key).stage = CycleStage .Create;
     }
+    public void Start() {
+        stage = CycleStage .Create;
+    }
+    public void End() {
+        stage = CycleStage .AnimateOut;
+    }
+    public void Kill() {
+        stage = CycleStage .Destroy;
+    }
     public void BeforeAll(DeltaBatch batch) {
         /** Called before each Frame once Create has been called. Is not called before Destroy. */
     }
@@ -98,9 +107,9 @@ public class Screen {
 
     public void AddButton(String sName,BitmapFont font,String sLabel,Rect rButton,String sResNorm,String sResHov,String sResDown,ClickListener clicker) {
         Skin skin = new Skin();
-        skin.add("Norm", ResourceMan.Get(sResNorm));
-        skin.add("Down", ResourceMan.Get(sResDown));
-        skin.add("Hov", ResourceMan.Get(sResHov));
+        skin.add("Norm", ResMan.Get(sResNorm));
+        skin.add("Down", ResMan.Get(sResDown));
+        skin.add("Hov", ResMan.Get(sResHov));
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.font = (font != null) ? font : dfont;
         textButtonStyle.up = skin.getDrawable("Norm");
