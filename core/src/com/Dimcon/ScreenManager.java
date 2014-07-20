@@ -2,7 +2,9 @@ package com.Dimcon;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 import java.util.HashMap;
 
@@ -45,11 +47,20 @@ public class ScreenManager {
     }
 
     public void Update() {
-        batch.batch.begin();
+
         batch.Delta = UpdateRate/(System.nanoTime() - Now);
         Now = System.nanoTime();
         //////// Iterate through each screen.
+
         for (String key : ScreenStore.keySet()) {
+            /** Allow Clipping all drawing to rDisplay */
+            batch.batch.begin();
+            if (ScreenStore.get(key).ClipToRDisplay) {
+                ScreenStore.get(key).BeginClip(batch);
+                ScreenStore.get(key).ClipRect(ScreenStore.get(key).rDisplay);
+            }
+            /** NB NB NB NB NB
+             * Multiple batch sessions in a single frame may decrease performance dramatically. */
             switch (ScreenStore.get(key).stage) {
                 case Deactivated: default:
                     break;
@@ -84,14 +95,17 @@ public class ScreenManager {
             for (String key2 : ScreenStore.get(key).ButtonStore.keySet()) {
                 ScreenStore.get(key).ButtonStore.get(key2).UpdatePos(ScreenStore.get(key).rDisplay);
             }
+            batch.batch.end();
+            if (ScreenStore.get(key).ClipToRDisplay) {
+                ScreenStore.get(key).DisableClip(batch);
+            }
         }//////////////////////////////////
 
-        batch.batch.end();
+
         batch.DrawStage.act();
         batch.DrawStage.draw();
 
     }
-
 }
 
 class DeltaBatch {

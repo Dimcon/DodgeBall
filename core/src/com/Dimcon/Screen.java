@@ -1,6 +1,7 @@
 package com.Dimcon;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -28,7 +29,8 @@ public class Screen {
     static Rect rFullscreen = new Rect(0, Gdx.graphics.getHeight(),Gdx.graphics.getWidth(),0);
     Boolean Display = false,
             Paused = false,
-            Active = false;
+            Active = false,
+            ClipToRDisplay = false;
     String Name = null;
     float   fXunit = rDisplay.width()/100f,
             fYunit = rDisplay.height()/100f,
@@ -129,7 +131,33 @@ public class Screen {
     public void RemoveButton(String sName) {
         ButtonStore.remove(sName);
     }
-}
+
+    /** Clip Interface
+     *  Batch will be ended and restarted whenever a GL function is enabled/disabled.
+     *  Be sure to batch multiple clips within the same batch.begin and batch.end for performance gain. */
+    public void  EnableClip(DeltaBatch batch) {
+        Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
+    }
+    public void BeginClip(DeltaBatch batch) {
+        //batch.batch.end();
+        batch.batch.flush();
+        EnableClip(batch);
+        //batch.batch.begin();
+    }
+    public void ClipRect(Rect rClip) {
+        Gdx.gl.glScissor((int)rClip.l(),(int)rClip.b(),(int)rClip.width(),(int)rClip.height());
+    }
+    public void EndClip(DeltaBatch batch) {
+        //batch.batch.end();
+        batch.batch.flush();
+        DisableClip(batch);
+        //batch.batch.begin();
+    }
+    public void DisableClip(DeltaBatch batch) {
+        Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
+    }
+
+  }
 
 enum CycleStage {
     Deactivated, Create, AnimateIn, Draw, AnimateOut, Destroy;

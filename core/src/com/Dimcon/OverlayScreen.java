@@ -44,6 +44,7 @@ public class OverlayScreen extends Screen {
     public Boolean Draw(DeltaBatch batch) {
         ResMan.GetRect("Player").Update(rDisplay, 45*fXunit,(5*fYunit) + (10*fXunit),55*fXunit,(5*fYunit));
         ResMan.GetRect("Player").Draw(ResMan.Get("Player"),batch.batch,fAlpha);
+        BeginClip(batch);
         ResMan.GetRect("Handle").Draw(ResMan.Get("Handle"),batch.batch,fAlpha);
         return super.Draw(batch);
     }
