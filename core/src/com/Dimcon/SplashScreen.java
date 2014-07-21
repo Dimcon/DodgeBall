@@ -36,7 +36,7 @@ public class SplashScreen extends Screen {
     public Boolean Draw(DeltaBatch batch) {
         rTest.DrawWithAlpha(img, batch.batch, rDisplay.a());
         rTest.RectCopy(rDisplay);
-        Switch("Main",Dodgeball.Scrnman);
+        Switch("Main");
         rDisplay.StartAnimT(new Rect(ScreenX,ScreenY,ScreenX * 2,0),Interpolator.Decelerate,1000);
         return false;
     }

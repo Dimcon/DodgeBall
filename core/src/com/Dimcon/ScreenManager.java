@@ -13,15 +13,15 @@ import java.util.HashMap;
  */
 public class ScreenManager {
     static HashMap<String,Screen> ScreenStore = new HashMap<String, Screen>();
-    long Now = 000000000;
-    final long
+    static long Now = 000000000;
+    static final long
                 FramesPerSecond = 60,
                 UpdateRate = 100000000/FramesPerSecond;
     static DeltaBatch batch = new DeltaBatch();
     static ResMan ResMan = new ResMan();
     static SpriteBatch Sbatch = new SpriteBatch();
 
-    ScreenManager(Screen First) {
+    public static void FirstScreen(Screen First) {
         Gdx.input.setInputProcessor(batch.toucher);
         First.stage = CycleStage.Create;
         AddScreen(First);
@@ -29,24 +29,24 @@ public class ScreenManager {
         batch.batch = Sbatch;
     }
 
-    public void AddScreen(Screen NewScreen) {
+    public static void AddScreen(Screen NewScreen) {
         ScreenStore.put(NewScreen.Name,NewScreen);
     }
-    public void RemoveScreen(String sName) {
+    public  static void RemoveScreen(String sName) {
         ScreenStore.remove(sName);
     }
 
-    public void StartScreen(String sScreen) {
+    public  static void StartScreen(String sScreen) {
         ScreenStore.get(sScreen).stage = CycleStage .Create;
     }
-    public void EndScreen(String sScreen) {
+    public  static void EndScreen(String sScreen) {
         ScreenStore.get(sScreen).stage = CycleStage .AnimateOut;
     }
-    public void KillScreen(String sScreen) {
+    public  static void KillScreen(String sScreen) {
         ScreenStore.get(sScreen).stage = CycleStage .Destroy;
     }
 
-    public void Update() {
+    public static void Update() {
 
         batch.Delta = UpdateRate/(System.nanoTime() - Now);
         Now = System.nanoTime();

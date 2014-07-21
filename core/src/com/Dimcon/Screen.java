@@ -31,7 +31,7 @@ public class Screen {
             Paused = false,
             Active = false,
             ClipToRDisplay = false;
-    String Name = null;
+    public String Name = null;
     float   fXunit = rDisplay.width()/100f,
             fYunit = rDisplay.height()/100f,
 
@@ -50,9 +50,9 @@ public class Screen {
         rDisplay.Animate();
 
     }
-    public void Switch(String key,ScreenManager screenManager) {
+    public void Switch(String key) {
         stage = CycleStage .AnimateOut;
-        screenManager.ScreenStore.get(key).stage = CycleStage .Create;
+        ScreenManager.ScreenStore.get(key).stage = CycleStage .Create;
     }
     public void Start() {
         stage = CycleStage .Create;

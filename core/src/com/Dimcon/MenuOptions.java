@@ -18,7 +18,7 @@ public class MenuOptions {
         fLeft = fStartAt;
         fWidth = 10*fXUnit;
         fGap = 25*fXUnit;
-        rArray = new Rect[10];
+        rArray = new Rect[5];
         float fHolder = fLeft;
         for (int i = 0; i < rArray.length; i++) {
             rArray[i] = new Rect(rDisplayP, fHolder, 90 * fYUnit, fHolder + fWidth, 50 * fYUnit);

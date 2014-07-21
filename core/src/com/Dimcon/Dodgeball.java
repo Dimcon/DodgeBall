@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Dodgeball extends ApplicationAdapter {
 	SpriteBatch batch;
-    static ScreenManager Scrnman;
     public static SplashScreen splash;
     public static GameScreen gamescreen;
     public static OverlayScreen overlay;
@@ -26,10 +25,10 @@ public class Dodgeball extends ApplicationAdapter {
         main = new MainScreen();
         gamescreen = new GameScreen();
         overlay = new OverlayScreen();
-        Scrnman = new ScreenManager(splash);
-        Scrnman.AddScreen(main);
-        Scrnman.AddScreen(gamescreen);
-        Scrnman.AddScreen(overlay);
+        ScreenManager.FirstScreen(splash);
+        ScreenManager.AddScreen(main);
+        ScreenManager.AddScreen(gamescreen);
+        ScreenManager.AddScreen(overlay);
         overlay.stage = CycleStage.Create;
         Rect.setDebug(true);
 	}
@@ -38,6 +37,6 @@ public class Dodgeball extends ApplicationAdapter {
 	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Scrnman.Update();
+        ScreenManager.Update();
 	}
 }
