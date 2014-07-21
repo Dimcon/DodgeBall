@@ -75,8 +75,6 @@ public class MainScreen extends  Screen {
         HorPath.Draw(ResMan.Get("Handle"),batch.batch);
         rSlowDown = new Rect(HorPath.l(),HorPath.b() + (10*fYunit),HorPath.r(),HorPath.b());
         rSpeedUP = new Rect(rSlowDown.l(),rSlowDown.t() + (10*fYunit),rSlowDown.r(),rSlowDown.t());
-        //rSlowDown.Draw(ResMan.Get("Handle"),batch.batch);
-        //rSpeedUP.Draw(ResMan.Get("Handle"),batch.batch);
         rDisplay.DrawWithAlpha(ResMan.Get("Screen"), batch.batch, rDisplay.a());
         MenOp.Update(ResMan.GetRect("Handle").CenterX(),rDisplay,batch.batch);
         return super.Draw(batch);
@@ -124,7 +122,7 @@ public class MainScreen extends  Screen {
                 ResMan.GetRect("Handle").setr(rDisplay, ResMan.GetRect("Handle").l() + 10 * fXunit);
                 if (ResMan.GetRect("Handle").b() < rSlowDown.t() && ResMan.GetRect("Handle").b() > rSlowDown.b()) {
                     float fTop = ResMan.GetRect("Handle").TouchedY() - HandleY;
-                    ResMan.GetRect("Handle").setb(fTop - (rSlowDown.height() * (float)(1 - Math.cos((double)((fTop-rSlowDown.b())/rSlowDown.height())* (0.5 * Math.PI)))));
+                    ResMan.GetRect("Handle").setb(rSlowDown.b());
                     ResMan.GetRect("Handle").sett(ResMan.GetRect("Handle").b() + 10 * fXunit);
                 } else if (ResMan.GetRect("Handle").b() < rSpeedUP.t() && ResMan.GetRect("Handle").b() > rSlowDown.b()) {
                     float fTop = ResMan.GetRect("Handle").TouchedY() - HandleY;
