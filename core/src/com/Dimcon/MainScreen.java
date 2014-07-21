@@ -27,7 +27,7 @@ public class MainScreen extends  Screen {
     }
 
     @Override
-    public void AfterAll(DeltaBatch batch) {
+    public void  AfterAll(DeltaBatch batch) {
         super.AfterAll(batch);
 
     }
