@@ -130,7 +130,7 @@ public class MainScreen extends  Screen {
                     ResMan.GetRect("Handle").sett(ResMan.GetRect("Handle").b() + 10 * fXunit);
                 }
             }
-            if (ResMan.GetRect("Handle").CenterY() < HorPath.b()) {
+            if (ResMan.GetRect("Handle" ).CenterY() < HorPath.b()) {
                 ResMan.GetRect("Handle").setl(rDisplay, rReturn.l());
                 ResMan.GetRect("Handle").setr(rDisplay, ResMan.GetRect("Handle").l() + 10 * fXunit);
             }
