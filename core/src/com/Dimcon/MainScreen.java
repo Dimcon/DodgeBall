@@ -118,7 +118,7 @@ public class MainScreen extends  Screen {
             }
             if (ResMan.GetRect("Handle").b() > HorPath.b()) {
                 TouchLeft = ResMan.GetRect("Handle").TouchedX() - HandleX;
-                ResMan.GetRect("Handle").setl(rDisplay, (TouchLeft));
+                ResMan.GetRect("Handle" ).setl(rDisplay, (TouchLeft));
                 ResMan.GetRect("Handle").setr(rDisplay, ResMan.GetRect("Handle").l() + 10 * fXunit);
                 if (ResMan.GetRect("Handle").b() < rSlowDown.t() && ResMan.GetRect("Handle").b() > rSlowDown.b()) {
                     float fTop = ResMan.GetRect("Handle").TouchedY() - HandleY;
