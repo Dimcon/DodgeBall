@@ -1,5 +1,6 @@
 package com.Dimcon;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
@@ -26,16 +27,28 @@ public class MenuOptions {
         }
         fTotWidth =  ((rArray.length - 1) * (fWidth + fGap)) + fWidth;
     }
-    public void Update(float fTouchX,Rect rDisplayP,SpriteBatch batch) {
-        fLeft = (50*fXUnit) -(((((fTouchX)/(rDisplayP.width())))) * (fTotWidth));
+    public void Update(Rect rHor,float fTouchX,Rect rDisplayP,SpriteBatch batch) {
+        fLeft = (rHor.l()) -(((((fTouchX - rHor.l())/(rHor.width())))) * (fTotWidth - rHor.width()));
         float fHolder = fLeft;
         for (int i = 0; i < rArray.length; i++) {
             rArray[i] = new Rect(rDisplayP,fHolder,90*fYUnit,fHolder + fWidth,50*fYUnit);
             fHolder += fWidth + fGap;
-            rArray[i].Draw(ResMan.Get("Screen"),batch);
+            rArray[i].Draw(ResMan.Get("Screen"), batch);
         }
         if (rArray[rArray.length-1].r() <= 60*fXUnit) {
             fLeft =  (60*fXUnit) - ((rArray.length - 1) * (fWidth + fGap)) + fWidth;
         }
+    }
+    public float SetLeft(Rect rHor,float fMult,float fHandle,float fTouchX) {
+        float Width = rHor.width();
+        float fSingle = Width/(rArray.length-1);
+        int Pos = (int)Math.floor((fTouchX-rHor.l()/(fSingle)));
+        boolean FirstHalf = (Pos+0.49f) < (fTouchX-rHor.l())/(fSingle);
+        if (FirstHalf) {
+            double Angle = (double)(((fSingle*Pos) - (fTouchX - rHor.l()))/(fSingle/2))* (0.5 * Math.PI);
+            return fTouchX - fHandle + (fMult*((fSingle/2) * (float)(1-Math.sin(Angle))));
+            }
+        double Angle =(double)(((fSingle*Pos) - (fTouchX - rHor.l()))/(fSingle/2))* (0.5 * Math.PI);
+        return fTouchX - fHandle - (fMult*((fSingle/2) * (float)(Math.cos(Angle))));
     }
 }
