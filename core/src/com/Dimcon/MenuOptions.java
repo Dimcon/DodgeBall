@@ -42,13 +42,11 @@ public class MenuOptions {
     public float SetLeft(Rect rHor,float fMult,float fHandle,float fTouchX) {
         float Width = rHor.width();
         float fSingle = Width/(rArray.length-1);
-        int Pos = (int)Math.floor((fTouchX-rHor.l()/(fSingle)));
+        int Pos = (int)Math.floor(((fTouchX-rHor.l())/(fSingle)));
         boolean FirstHalf = (Pos+0.49f) < (fTouchX-rHor.l())/(fSingle);
-        if (FirstHalf) {
-            double Angle = (double)(((fSingle*Pos) - (fTouchX - rHor.l()))/(fSingle/2))* (0.5 * Math.PI);
-            return fTouchX - fHandle + (fMult*((fSingle/2) * (float)(1-Math.sin(Angle))));
-            }
-        double Angle =(double)(((fSingle*Pos) - (fTouchX - rHor.l()))/(fSingle/2))* (0.5 * Math.PI);
-        return fTouchX - fHandle - (fMult*((fSingle/2) * (float)(Math.cos(Angle))));
+        double fAngle = (((fTouchX-rHor.l())-(fSingle/2))/
+                                           (fSingle/2)) * (0.5f*Math.PI);
+        double add = (fSingle/2) * ((FirstHalf)? Math.sin(fAngle) : Math.sin(fAngle));
+        return (fTouchX + ((float) add * fMult)) - fHandle;
     }
 }
