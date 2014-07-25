@@ -179,11 +179,11 @@ public class Rect {
             }
         }
         if (RelativeToLeft) {
-            if (!(rTest.l < r && rTest.r > l && bResult == true)) {
+            if (!(rTest.l < r && rTest.r > l && bResult)) {
                 bResult = false;
             }
         } else {
-            if (!(rTest.l > r && rTest.r < l && bResult == true)) {
+            if (!(rTest.l > r && rTest.r < l && bResult)) {
                 bResult = false;
             }
         }
@@ -509,6 +509,7 @@ public class Rect {
 enum Interpolator {
     Accelerate, Decelerate, Constant
 }
+
 class RectS {
     /** Basic Rectangle */
     /* top,bottom,left,right */
@@ -662,11 +663,11 @@ class RectS {
             }
         }
         if (RelativeToLeft) {
-            if (!(rTest.l() < r && rTest.r() > l && bResult == true)) {
+            if (!(rTest.l() < r && rTest.r() > l && bResult)) {
                 bResult = false;
             }
         } else {
-            if (!(rTest.l() > r && rTest.r() < l && bResult == true)) {
+            if (!(rTest.l() > r && rTest.r() < l && bResult)) {
                 bResult = false;
             }
         }
@@ -684,11 +685,11 @@ class RectS {
             }
         }
         if (RelativeToLeft) {
-            if (!(rTest.l < r && rTest.r > l && bResult == true)) {
+            if (!(rTest.l < r && rTest.r > l && bResult)) {
                 bResult = false;
             }
         } else {
-            if (!(rTest.l > r && rTest.r < l && bResult == true)) {
+            if (!(rTest.l > r && rTest.r < l && bResult)) {
                 bResult = false;
             }
         }
