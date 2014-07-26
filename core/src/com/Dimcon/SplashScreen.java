@@ -36,6 +36,8 @@ public class SplashScreen extends Screen {
     public Boolean Draw(DeltaBatch batch) {
         rTest.DrawWithAlpha(img, batch.batch, rDisplay.a());
         rTest.RectCopy(rDisplay);
+        Switch("Overlay");
+        ScreenMethod(CycleStage.Create,"Overlay",batch);
         Switch("Main");
         rDisplay.StartAnimT(new Rect(ScreenX,ScreenY,ScreenX * 2,0),Interpolator.Decelerate,1000);
         return false;
@@ -47,8 +49,6 @@ public class SplashScreen extends Screen {
         rTest.DrawWithAlpha(img, batch.batch, rDisplay.a());
         rTest.RectCopy(rDisplay);
         return (rDisplay.a() == 0f);
-
-        // This keyboard is actually pretty decent
     }
 
     @Override

@@ -21,7 +21,7 @@ public class OverlayScreen extends Screen {
 
     @Override
     public Boolean Create(DeltaBatch batch) {
-        rPlayer = new Rect(rDisplay, 45*fXunit,(20*fYunit) + (10*fXunit),55*fXunit,(20*fYunit));
+        rPlayer = new Rect(rDisplay, 45*fXunit,(5*fYunit) + (10*fXunit),55*fXunit,(5*fYunit));
         rHandle = new Rect();
         rHandle.RectCopy(rPlayer);
         ResMan.AddRect("Player",rPlayer);
@@ -44,7 +44,6 @@ public class OverlayScreen extends Screen {
     public Boolean Draw(DeltaBatch batch) {
         ResMan.GetRect("Player").Update(rDisplay, 45*fXunit,(5*fYunit) + (10*fXunit),55*fXunit,(5*fYunit));
         ResMan.GetRect("Player").Draw(ResMan.Get("Player"),batch.batch,fAlpha);
-        BeginClip(batch);
         ResMan.GetRect("Handle").Draw(ResMan.Get("Handle"),batch.batch,fAlpha);
         return super.Draw(batch);
     }

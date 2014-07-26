@@ -20,7 +20,7 @@ public class MenuOptions {
         fLeft = fStartAt;
         fWidth = 10*fXUnit;
         fGap = 25*fXUnit;
-        rArray = new Rect[5];
+        rArray = new Rect[11];
         float fHolder = fLeft;
         for (int i = 0; i < rArray.length; i++) {
             rArray[i] = new Rect(rDisplayP, fHolder, 90 * fYUnit, fHolder + fWidth, 50 * fYUnit);
@@ -40,21 +40,20 @@ public class MenuOptions {
             fLeft = (60 * fXUnit) - ((rArray.length - 1) * (fWidth + fGap)) + fWidth;
         }
     }
-    public float SetLeft(Rect rHor,float fMult,float fHandle,float fTouchX,SpriteBatch batch) {
-        float mnHor = fTouchX - rHor.l();
+    public float SetLeft(Rect rHor,float fMult,float fHandle,float CenterX,float fTouchX,SpriteBatch batch) {
+        float TouchXmC = (fTouchX - rHor.l()) - (fTouchX - CenterX);
+        float TouchX = (fTouchX - rHor.l());
         float fSingle = rHor.width() / (rArray.length-1);
-        float fPos = ((mnHor - (mnHor % fSingle)) / fSingle);
-        boolean bFirstHalf =  (mnHor % fSingle) / fSingle < 0.49f;
+        float fPos = ((TouchXmC - (TouchXmC % fSingle)) / fSingle);
+        boolean bFirstHalf =  (TouchXmC % fSingle) / fSingle < 0.49f;
+        float fMod;
         if (bFirstHalf) {
-            float fAngle = ((mnHor - (fSingle * fPos))/(fSingle/2));
-            float fMulti = (float)(1-Math.cos(fAngle * (0.5f*Math.PI)));
-            float fReturn = (fMult * (fMulti * (fSingle/2)));
-            return (fSingle * fPos) + fReturn + fHandle;
+            float fTimesBy = (1 - (float)Math.sin(((TouchXmC - (fPos * fSingle))/(fSingle/2)) * (0.5f*Math.PI)));
+            fMod = fMult * fTimesBy * ((TouchXmC - (fPos * fSingle))*1f);
         } else {
-            float fAngle = (((fSingle * (fPos+1)) - mnHor)/(fSingle/2));
-            float fMulti = (float)(Math.sin(fAngle * (0.5f*Math.PI)));
-            float fReturn = (fMult * (fMulti*(fSingle/2)));
-            return (fSingle * (fPos+1)) - fReturn + fHandle;
+            float fTimesBy = 1-(float)Math.sin(((((fPos+1) * fSingle) - TouchXmC)/(fSingle/2)) * (0.5f*Math.PI));
+            fMod = fMult * fTimesBy * (-(((fPos+1) * fSingle) - TouchXmC)*1f);
         }
+        return fTouchX - fMod - fHandle;
     }
 }

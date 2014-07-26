@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import java.awt.FontMetrics;
 import java.util.HashMap;
 
 /**
@@ -30,7 +31,10 @@ public class Screen {
     Boolean Display = false,
             Paused = false,
             Active = false,
-            ClipToRDisplay = false;
+            ClipToRDisplay = false,
+            Created = false,
+            CreateAgain = false,
+            Debugger = false;
     public String Name = null;
     float   fXunit = rDisplay.width()/100f,
             fYunit = rDisplay.height()/100f,
@@ -50,10 +54,33 @@ public class Screen {
         rDisplay.Animate();
 
     }
+
     public void Switch(String key) {
         stage = CycleStage .AnimateOut;
         ScreenManager.ScreenStore.get(key).stage = CycleStage .Create;
     }
+    public void CreateAgain(Boolean bYesNo) {
+        CreateAgain = bYesNo;
+    }
+
+    public Boolean ScreenMethod(CycleStage stageP,String sScreen,DeltaBatch batch) {
+        switch (ScreenManager.ScreenStore.get(sScreen).stage) {
+            case Deactivated: default:
+                break;
+            case Create:
+                return ScreenManager.ScreenStore.get(sScreen).Create(batch);
+            case AnimateIn:
+                return ScreenManager.ScreenStore.get(sScreen).AnimIn(batch);
+            case Draw:
+                return ScreenManager.ScreenStore.get(sScreen).Draw(batch);
+            case AnimateOut:
+                return ScreenManager.ScreenStore.get(sScreen).AnimOut(batch);
+            case Destroy:
+                return ScreenManager.ScreenStore.get(sScreen).Destroy(batch);
+        }
+        return true;
+    }
+
     public void Start() {
         stage = CycleStage .Create;
     }
@@ -157,7 +184,39 @@ public class Screen {
         Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
     }
 
-  }
+    public void SetDebug(Boolean bYesNo) {
+        Debugger = bYesNo;
+    }
+    /** Screen debugger.
+     * NB 1 second = 1 000 000 000 nanoseconds */
+    long fLastTime = 0;
+    long fAverage = 0;
+    int iLength = 100;
+    String sDebugInfo;
+    BitmapFont fontDebug = new BitmapFont();
+    HashMap<Integer , Long> SperCycA = new HashMap<Integer, Long>();
+    public void CreateDebug() {
+        fontDebug.setScale(0.2f*fXunit);
+        fontDebug.setColor(0,0,1,1);
+        for (int i = 0; i < iLength; i++) {
+            SperCycA.put(i,0l);
+        }
+    }
+    public void DrawDebug(SpriteBatch batch) {
+        fAverage = 0;
+        for (int i = 0; i < iLength-1; i++) {
+            fAverage += SperCycA.get(i);
+            SperCycA.put(i,SperCycA.get(i+1));
+        }
+        SperCycA.put(iLength-1,System.nanoTime() - fLastTime);
+        fLastTime = System.nanoTime();
+        sDebugInfo = "| " + Gdx.graphics.getFramesPerSecond() + "Fps - Cpu time: "
+                + (Math.floor((double)(((fAverage/iLength))/10000)) /100000) + "s";
+        fontDebug.draw(batch, sDebugInfo,rDisplay.l() + fXunit,rDisplay.t() - fYunit);
+
+    }
+
+}
 
 enum CycleStage {
     Deactivated, Create, AnimateIn, Draw, AnimateOut, Destroy;

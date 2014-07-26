@@ -29,7 +29,7 @@ public class Dodgeball extends ApplicationAdapter {
         ScreenManager.AddScreen(main);
         ScreenManager.AddScreen(gamescreen);
         ScreenManager.AddScreen(overlay);
-        overlay.stage = CycleStage.Create;
+        //overlay.stage = CycleStage.Create;
         Rect.setDebug(true);
 	}
 

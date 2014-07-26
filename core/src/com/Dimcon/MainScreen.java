@@ -53,6 +53,7 @@ public class MainScreen extends  Screen {
         rSpeedUP = new Rect(rSlowDown.l(),rSlowDown.t() + (5*fYunit),rSlowDown.r(),rSlowDown.t());
         MenOp = new MenuOptions(fXunit,fYunit,40*fXunit,rDisplay);
         ClipToRDisplay = true;
+        SetDebug(true);
         return super.Create(batch);
     }
 
@@ -138,7 +139,7 @@ public class MainScreen extends  Screen {
             }
             if (ResMan.GetRect("Handle").b() > rSpeedUP.t()) {
                 TouchLeft = ResMan.GetRect("Handle").TouchedX();
-                ResMan.GetRect("Handle").setl(MenOp.SetLeft(HorPath,(((rSpeedUP.t()+(5*fYunit))>ResMan.GetRect("Handle").b()))?1-(((rSpeedUP.t()+(5*fYunit))-ResMan.GetRect("Handle").b())/(5*fYunit)):1,HandleX,TouchLeft,batch))
+                ResMan.GetRect("Handle").setl(MenOp.SetLeft(HorPath,(((rSpeedUP.t()+(5*fYunit))>ResMan.GetRect("Handle").b()))?1-(((rSpeedUP.t()+(5*fYunit))-ResMan.GetRect("Handle").b())/(5*fYunit)):1,HandleX,ResMan.GetRect("Handle").CenterX(),TouchLeft,batch))
                 ;
                 ResMan.GetRect("Handle").setr(rDisplay, ResMan.GetRect("Handle").l() + 10 * fXunit);
             }

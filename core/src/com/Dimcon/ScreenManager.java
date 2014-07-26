@@ -55,49 +55,61 @@ public class ScreenManager {
         for (String key : ScreenStore.keySet()) {
             /** Allow Clipping all drawing to rDisplay */
             batch.batch.begin();
-            if (ScreenStore.get(key).ClipToRDisplay) {
-                ScreenStore.get(key).BeginClip(batch);
-                ScreenStore.get(key).ClipRect(ScreenStore.get(key).rDisplay);
+            Screen LocalScreen = ScreenStore.get(key);
+            if (LocalScreen.ClipToRDisplay) {
+                LocalScreen.BeginClip(batch);
+                LocalScreen.ClipRect(ScreenStore.get(key).rDisplay);
             }
             /** NB NB NB NB NB
              * Multiple batch sessions in a single frame may decrease performance dramatically. */
-            switch (ScreenStore.get(key).stage) {
+            switch (LocalScreen.stage) {
                 case Deactivated: default:
                     break;
                 case Create:
-                    if (ScreenStore.get(key).Create(batch))
-                    {ScreenStore.get(key).stage = CycleStage .AnimateIn;}
+                    if (!LocalScreen.Created || !LocalScreen.CreateAgain) {
+                        if (LocalScreen.Create(batch)) {
+                            LocalScreen.stage = CycleStage.AnimateIn;
+                        }
+                        LocalScreen.Created = true;
+                    }
+                    if (LocalScreen.Debugger) {
+                        LocalScreen.CreateDebug();
+                    }
                     break;
                 case AnimateIn:
-                    ScreenStore.get(key).BeforeAll(batch);
-                    if (ScreenStore.get(key).AnimIn(batch))
-                    {ScreenStore.get(key).stage = CycleStage .Draw;} else
-                    ScreenStore.get(key).AfterAll(batch);
+                    LocalScreen.BeforeAll(batch);
+                    if (LocalScreen.AnimIn(batch))
+                    {LocalScreen.stage = CycleStage .Draw;} else
+                        LocalScreen.AfterAll(batch);
                     break;
                 case Draw:
-                    ScreenStore.get(key).BeforeAll(batch);
-                    if (ScreenStore.get(key).Draw(batch))
-                    {ScreenStore.get(key).stage = CycleStage .AnimateOut;}else
-                    ScreenStore.get(key).AfterAll(batch);
+                    LocalScreen.BeforeAll(batch);
+                    if (LocalScreen.Draw(batch))
+                    {LocalScreen.stage = CycleStage .AnimateOut;}else
+                        LocalScreen.AfterAll(batch);
                     break;
                 case AnimateOut:
-                    ScreenStore.get(key).BeforeAll(batch);
-                    if (ScreenStore.get(key).AnimOut(batch))
-                    {ScreenStore.get(key).stage = CycleStage .Destroy;} else
-                    ScreenStore.get(key).AfterAll(batch);
+                    LocalScreen.BeforeAll(batch);
+                    if (LocalScreen.AnimOut(batch))
+                    {LocalScreen.stage = CycleStage .Destroy;} else
+                        LocalScreen.AfterAll(batch);
                     break;
                 case Destroy:
-                    if (ScreenStore.get(key).Destroy(batch))
-                    {ScreenStore.get(key).stage = CycleStage .Deactivated;}
+                    if (LocalScreen.Destroy(batch))
+                    {LocalScreen.stage = CycleStage .Deactivated;}
                     break;
             }
-            ScreenStore.get(key).ResetUnits();
-            for (String key2 : ScreenStore.get(key).ButtonStore.keySet()) {
-                ScreenStore.get(key).ButtonStore.get(key2).UpdatePos(ScreenStore.get(key).rDisplay);
+            LocalScreen.ResetUnits();
+            for (String key2 : LocalScreen.ButtonStore.keySet()) {
+                LocalScreen.ButtonStore.get(key2).UpdatePos(LocalScreen.rDisplay);
             }
+            if (LocalScreen.Debugger) {
+                LocalScreen.DrawDebug(batch.batch);
+            }
+
             batch.batch.end();
-            if (ScreenStore.get(key).ClipToRDisplay) {
-                ScreenStore.get(key).DisableClip(batch);
+            if (LocalScreen.ClipToRDisplay) {
+                LocalScreen.DisableClip(batch);
             }
         }//////////////////////////////////
 
