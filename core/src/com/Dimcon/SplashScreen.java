@@ -47,6 +47,8 @@ public class SplashScreen extends Screen {
         rTest.DrawWithAlpha(img, batch.batch, rDisplay.a());
         rTest.RectCopy(rDisplay);
         return (rDisplay.a() == 0f);
+
+        // This keyboard is actually pretty decent
     }
 
     @Override
