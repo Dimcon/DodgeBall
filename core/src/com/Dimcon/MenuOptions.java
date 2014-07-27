@@ -47,13 +47,15 @@ public class MenuOptions {
         float fPos = ((TouchXmC - (TouchXmC % fSingle)) / fSingle);
         boolean bFirstHalf =  (TouchXmC % fSingle) / fSingle < 0.49f;
         float fMod;
-        if (bFirstHalf) {
+        /** Limit to current point*/
+
+        /*ACCELDECEL at points      if (bFirstHalf) {
             float fTimesBy = (1 - (float)Math.sin(((TouchXmC - (fPos * fSingle))/(fSingle/2)) * (0.5f*Math.PI)));
             fMod = fMult * fTimesBy * ((TouchXmC - (fPos * fSingle))*1f);
         } else {
             float fTimesBy = 1-(float)Math.sin(((((fPos+1) * fSingle) - TouchXmC)/(fSingle/2)) * (0.5f*Math.PI));
             fMod = fMult * fTimesBy * (-(((fPos+1) * fSingle) - TouchXmC)*1f);
         }
-        return fTouchX - fMod - fHandle;
+        return fTouchX - fMod - fHandle;*/
     }
 }
