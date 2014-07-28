@@ -25,7 +25,6 @@ public class ScreenManager {
         Gdx.input.setInputProcessor(batch.toucher);
         First.stage = CycleStage.Create;
         AddScreen(First);
-        //Gdx.input.setInputProcessor(batch.DrawStage);
         batch.batch = Sbatch;
     }
 

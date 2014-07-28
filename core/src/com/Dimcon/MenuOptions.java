@@ -28,8 +28,8 @@ public class MenuOptions {
         }
         fTotWidth =  ((rArray.length - 1) * (fWidth + fGap)) + fWidth;
     }
-    public void Update(Rect rHor,float fTouchX,Rect rDisplayP,SpriteBatch batch) {
-        fLeft = (rHor.l()) - (((((fTouchX - rHor.l()) / (rHor.width())))) * (fTotWidth - rHor.width()));
+    public void Update(Rect rHor,Rect rHandle, float fTouchX,Rect rDisplayP,SpriteBatch batch) {
+        fLeft = (rHor.l() - (rHandle.width()/2)) - (((((fTouchX - rHor.l()) / (rHor.width())))) * (fTotWidth - (rHor.width() + (rHandle.width()))));
         float fHolder = fLeft;
         for (int i = 0; i < rArray.length; i++) {
             rArray[i] = new Rect(rDisplayP, fHolder, 90 * fYUnit, fHolder + fWidth, 50 * fYUnit);
@@ -40,15 +40,20 @@ public class MenuOptions {
             fLeft = (60 * fXUnit) - ((rArray.length - 1) * (fWidth + fGap)) + fWidth;
         }
     }
-    public float SetLeft(Rect rHor,float fMult,float fHandle,float CenterX,float fTouchX,SpriteBatch batch) {
+    public int DeterminePos(Rect rHor,float CenterX,float fTouchX) {
         float TouchXmC = (fTouchX - rHor.l()) - (fTouchX - CenterX);
-        float TouchX = (fTouchX - rHor.l());
+        int fPos = (int)((TouchXmC - (TouchXmC % (rHor.width() / (rArray.length-1)))) / (rHor.width() / (rArray.length-1)));
+        if (!(((TouchXmC % (rHor.width() / (rArray.length-1))) / (rHor.width() / (rArray.length-1))) < 0.49f))
+            fPos++;
+        /** Get Current point*/
+        return fPos;
+    }
+    public float SetLeft(Rect rHor,float fMult,float fHandle,float CenterX,float fTouchX,int Pos) {
+        float TouchXmC = (fTouchX - rHor.l()) - (fTouchX - CenterX);
         float fSingle = rHor.width() / (rArray.length-1);
-        float fPos = ((TouchXmC - (TouchXmC % fSingle)) / fSingle);
-        boolean bFirstHalf =  (TouchXmC % fSingle) / fSingle < 0.49f;
-        float fMod;
+        int fPos = Pos;
         /** Limit to current point*/
-
+        return fTouchX - fHandle + (fMult * ((fPos*fSingle) - TouchXmC));
         /*ACCELDECEL at points      if (bFirstHalf) {
             float fTimesBy = (1 - (float)Math.sin(((TouchXmC - (fPos * fSingle))/(fSingle/2)) * (0.5f*Math.PI)));
             fMod = fMult * fTimesBy * ((TouchXmC - (fPos * fSingle))*1f);

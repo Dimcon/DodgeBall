@@ -46,7 +46,7 @@ public class MainScreen extends  Screen {
         rDisplay.StartAnimT(rFullscreen, Interpolator.Decelerate, 1000);
         rDisplay.setAlpha(0f);
         rDisplay.StartAnimA(1f, Interpolator.Constant, 1000);
-        ResMan.AddImage("Screen", "badlogic.jpg");
+        ResMan.AddImage("Screen", "Screenshot.png");
         rReturn.RectCopy(Dodgeball.overlay.rHandle);
         HorPath = new Rect(rDisplay,10*fXunit,35*fYunit,90*fXunit,25*fYunit);
         rSlowDown = new Rect(HorPath.l(),HorPath.t() + (5*fYunit),HorPath.r(),HorPath.t());
@@ -64,7 +64,7 @@ public class MainScreen extends  Screen {
         rSlowDown = new Rect(HorPath.l(),HorPath.b() + (10*fYunit),HorPath.r(),HorPath.b());
         rSpeedUP = new Rect(rSlowDown.l(),rSlowDown.t() + (10*fYunit),rSlowDown.r(),rSlowDown.t());
         RestrictHandle(batch.batch);
-        MenOp.Update(HorPath,ResMan.GetRect("Handle").CenterX(),rDisplay,batch.batch);
+        MenOp.Update(HorPath,ResMan.GetRect("Handle"),ResMan.GetRect("Handle").CenterX(),rDisplay,batch.batch);
         return super.AnimIn(batch);
     }
 
@@ -77,7 +77,7 @@ public class MainScreen extends  Screen {
         rSlowDown = new Rect(HorPath.l(),HorPath.b() + (10*fYunit),HorPath.r(),HorPath.b());
         rSpeedUP = new Rect(rSlowDown.l(),rSlowDown.t() + (10*fYunit),rSlowDown.r(),rSlowDown.t());
         rDisplay.DrawWithAlpha(ResMan.Get("Screen"), batch.batch, rDisplay.a());
-        MenOp.Update(HorPath,ResMan.GetRect("Handle").CenterX(),rDisplay,batch.batch);
+        MenOp.Update(HorPath,ResMan.GetRect("Handle"),ResMan.GetRect("Handle").CenterX(),rDisplay,batch.batch);
         return super.Draw(batch);
     }
 
@@ -93,6 +93,7 @@ public class MainScreen extends  Screen {
         return super.Destroy(batch);
     }
 
+    private int pos = 0;
     private void RestrictHandle(SpriteBatch batch) {
         HorPath = new Rect(rDisplay,10*fXunit,30*fYunit + (10*fXunit),90*fXunit,30*fYunit);
         if (!ResMan.GetRect("Handle").IsTouched()) {
@@ -139,8 +140,10 @@ public class MainScreen extends  Screen {
             }
             if (ResMan.GetRect("Handle").b() > rSpeedUP.t()) {
                 TouchLeft = ResMan.GetRect("Handle").TouchedX();
-                ResMan.GetRect("Handle").setl(MenOp.SetLeft(HorPath,(((rSpeedUP.t()+(5*fYunit))>ResMan.GetRect("Handle").b()))?1-(((rSpeedUP.t()+(5*fYunit))-ResMan.GetRect("Handle").b())/(5*fYunit)):1,HandleX,ResMan.GetRect("Handle").CenterX(),TouchLeft,batch))
-                ;
+                if (ResMan.GetRect("Handle").b() - rSpeedUP.t() < 1 * fXunit) {
+                    pos = MenOp.DeterminePos(HorPath,ResMan.GetRect("Handle").CenterX(),TouchLeft);
+                }
+                ResMan.GetRect("Handle").setl(MenOp.SetLeft(HorPath,(((rSpeedUP.t()+(5*fYunit))>ResMan.GetRect("Handle").b()))?1-(((rSpeedUP.t()+(5*fYunit))-ResMan.GetRect("Handle").b())/(5*fYunit)):1,HandleX,ResMan.GetRect("Handle").CenterX(),TouchLeft,pos));
                 ResMan.GetRect("Handle").setr(rDisplay, ResMan.GetRect("Handle").l() + 10 * fXunit);
             }
         }

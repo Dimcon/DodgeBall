@@ -401,7 +401,7 @@ public class Rect {
             setb(pb + (db * fMult));
             setl(pl + (dl * fMult));
             setr(pr + (dr * fMult));
-            if (fMult >= 0.999f) {
+            if (fMult >= 0.99f) {
                 animTranslate = false;
                 AnimTime = 0;
                 sett(rsDest.t);
