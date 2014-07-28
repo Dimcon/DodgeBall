@@ -1,5 +1,6 @@
 package com.Dimcon;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -24,10 +25,11 @@ public class Rect {
                     RelativeToLeft = true,
                     Changed = true;
     static boolean Debugg = false;
-
+    public static int RectsDrawn = 0;
     public static void setDebug(Boolean Value) {
         Debugg = Value;
     }
+    public static Rect rScreen = new Rect(0, Gdx.graphics.getHeight(),Gdx.graphics.getWidth(),0);
 
     public Rect(float leftP, float topP, float rightP, float bottomP) {
         /** Define rectangle using a single procedure.  */
@@ -300,17 +302,21 @@ public class Rect {
     public void DrawWithAlpha(Texture tx,SpriteBatch sBtch, float fAlpha) {
     /** Draw using LIBGDX Spritebatch. LibGDX uses the bottom left of
      * the screen as the reference  */
-        if (Debugg) {
-            Color newcol = sBtch.getColor();
-            sBtch.setColor(1,1,1,1);
-            DrawOutLine(tx, sBtch);
-            sBtch.setColor(newcol);
-        } else {
-            Color newcol = sBtch.getColor();
-            sBtch.setColor(1, 1, 1, fAlpha);
-            sBtch.draw(tx, l, b, width(), height());
-            sBtch.setColor(newcol);
+        if (IsInside(rScreen)) {
+            if (Debugg) {
+                Color newcol = sBtch.getColor();
+                sBtch.setColor(1, 1, 1, 1);
+                DrawOutLine(tx, sBtch);
+                sBtch.setColor(newcol);
+            } else {
+                Color newcol = sBtch.getColor();
+                sBtch.setColor(1, 1, 1, fAlpha);
+                sBtch.draw(tx, l, b, width(), height());
+                sBtch.setColor(newcol);
+            }
+            Rect.RectsDrawn++;
         }
+
     }
 
     private RectS rsl = new RectS(),rst = new RectS(),rsr= new RectS(),rsb= new RectS();
@@ -700,6 +706,7 @@ class RectS {
         /** Draw using LIBGDX Spritebatch. LibGDX uses the bottom left of
          * the screen as the reference  */
         sBtch.draw(tx, l, b, width(), height());
+        Rect.RectsDrawn++;
     }
 }
 

@@ -194,26 +194,20 @@ public class Screen {
     int iLength = 100;
     String sDebugInfo;
     BitmapFont fontDebug = new BitmapFont();
-    HashMap<Integer , Long> SperCycA = new HashMap<Integer, Long>();
     public void CreateDebug() {
         fontDebug.setScale(0.2f*fXunit);
         fontDebug.setColor(0,0,1,1);
-        for (int i = 0; i < iLength; i++) {
-            SperCycA.put(i,0l);
-        }
+
     }
     public void DrawDebug(SpriteBatch batch) {
-        fAverage = 0;
-        for (int i = 0; i < iLength-1; i++) {
-            fAverage += SperCycA.get(i);
-            SperCycA.put(i,SperCycA.get(i+1));
-        }
-        SperCycA.put(iLength-1,System.nanoTime() - fLastTime);
-        fLastTime = System.nanoTime();
-        sDebugInfo = "| " + Gdx.graphics.getFramesPerSecond() + "Fps - Cpu time: "
-                + (Math.floor((double)(((fAverage/iLength))/10000)) /100000) + "s";
+        sDebugInfo = "| " + Gdx.graphics.getFramesPerSecond() + "Fps | " +
+                ScreenManager.RectsPerRound + " Rects | " +
+                (ResMan.SmallImages - ResMan.SmallImagesPurged) + "/" + (ResMan.SmallImages)  + "S-L"
+                + (ResMan.LargeImages - ResMan.LargeImagesPurged) + "/" + (ResMan.LargeImages) + " |";
+        fontDebug.setColor(0,0,1,1);
         fontDebug.draw(batch, sDebugInfo,rDisplay.l() + fXunit,rDisplay.t() - fYunit);
-
+        fontDebug.setColor(1,0,0,1);
+        fontDebug.draw(batch, sDebugInfo,rDisplay.l() + fXunit,rDisplay.b() + 5*fYunit);
     }
 
 }

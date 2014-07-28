@@ -12,6 +12,10 @@ public class ResMan {
     private static HashMap<String, Resource> ImageStore = new HashMap<String, Resource>(100);
     private static HashMap<String, Resource> ImageStoreLarge = new HashMap<String, Resource>(10);
     private static HashMap<String,Rect> RectStore = new HashMap<String, Rect>(100);
+    public static int SmallImages = 0,
+                        SmallImagesPurged = 0,
+                        LargeImages = 0,
+                        LargeImagesPurged = 0;
 
     public static void AddRect(String sName,Rect rAdd) {
         RectStore.put(sName,rAdd);
@@ -32,27 +36,33 @@ public class ResMan {
         Resource res = new Resource(sName,sPath,"Main");
         if (res.Size < (Gdx.graphics.getWidth()/2) * (Gdx.graphics.getHeight()/2)) {
             ImageStore.put(res.sName,res);
+            SmallImages++;
         } else {
             ImageStoreLarge.put(res.sName,res);
+            LargeImages++;
         }
     }
     public static void AddImage(String sName,String sPath,String Group) {
         Resource res = new Resource(sName,sPath,Group);
         if (res.Size < (Gdx.graphics.getWidth()/2) * (Gdx.graphics.getHeight()/2)) {
             ImageStore.put(res.sName,res);
+            SmallImages++;
         } else {
             ImageStoreLarge.put(res.sName,res);
+            LargeImages++;
         }
     }
     public static Texture Get(String sName) {
         if (ImageStore.containsKey(sName)) {
             if (ImageStore.get(sName).isNull) {
                 ImageStore.get(sName).GetBack();
+                SmallImagesPurged--;
             }
             return ImageStore.get(sName).imgResource;
         } else if (ImageStoreLarge.containsKey(sName)) {
             if (ImageStoreLarge.get(sName).isNull) {
                 ImageStoreLarge.get(sName).GetBack();
+                LargeImagesPurged--;
             }
             return ImageStoreLarge.get(sName).imgResource;
         }
@@ -63,27 +73,33 @@ public class ResMan {
         for (String key: ImageStore.keySet()) {
             if (ImageStore.get(key).Group.equals(sGroup))
                 ImageStore.get(key).dispose();
+            SmallImagesPurged++;
         }
         for (String key: ImageStoreLarge.keySet()) {
             if (ImageStoreLarge.get(key).Group.equals(sGroup))
                 ImageStoreLarge.get(key).dispose();
+            LargeImagesPurged++;
         }
     }
     public static void DisposeImage(String sName) {
         if (ImageStore.get(sName) != null) {
             ImageStore.get(sName).dispose();
+            SmallImagesPurged++;
             return;
         }
         if (ImageStoreLarge.get(sName) != null) {
             ImageStoreLarge.get(sName).dispose();
+            LargeImagesPurged++;
         }
     }
     public void DisposeAll() {
         for (String key: ImageStore.keySet()) {
             ImageStore.get(key).dispose();
+            SmallImagesPurged = SmallImages;
         }
         for (String key: ImageStoreLarge.keySet()) {
             ImageStoreLarge.get(key).dispose();
+            LargeImagesPurged = LargeImages;
         }
     }
 }

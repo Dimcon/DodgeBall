@@ -27,7 +27,7 @@ public class Dodgeball extends ApplicationAdapter {
         ScreenManager.AddScreen(main);
         ScreenManager.AddScreen(gamescreen);
         ScreenManager.AddScreen(overlay);
-        Rect.setDebug(false);
+        Rect.setDebug(true);
 	}
 
 	@Override
