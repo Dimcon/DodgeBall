@@ -32,7 +32,9 @@ public class MainScreen extends  Screen {
 
     }
 
-    boolean touchingHandle = false;
+    boolean touchingHandle = false,
+            StartingGame = false;
+    int StartingLevel = 0;
     float HandleX = 0,HandleY = 0,TouchLeft,TouchTop;
     Rect rReturn = new Rect();
     Rect HorPath = new Rect();
@@ -76,7 +78,7 @@ public class MainScreen extends  Screen {
         HorPath.Draw(ResMan.Get("Handle"),batch.batch);
         rSlowDown = new Rect(HorPath.l(),HorPath.b() + (10*fYunit),HorPath.r(),HorPath.b());
         rSpeedUP = new Rect(rSlowDown.l(),rSlowDown.t() + (10*fYunit),rSlowDown.r(),rSlowDown.t());
-        rDisplay.DrawWithAlpha(ResMan.Get("Screen"), batch.batch, rDisplay.a());
+        rDisplay.DrawWithAlpha((StartingGame?ResMan.Get("Screen") : ResMan.Get("Handle")), batch.batch, rDisplay.a());
         MenOp.Update(HorPath,ResMan.GetRect("Handle"),ResMan.GetRect("Handle").CenterX(),rDisplay,batch.batch);
         return super.Draw(batch);
     }
@@ -95,7 +97,7 @@ public class MainScreen extends  Screen {
 
     private int pos = 0;
     private void RestrictHandle(SpriteBatch batch) {
-        HorPath = new Rect(rDisplay,10*fXunit,30*fYunit + (10*fXunit),90*fXunit,30*fYunit);
+        HorPath = new Rect(rDisplay, 10 * fXunit, 30 * fYunit + (10 * fXunit), 90 * fXunit, 30 * fYunit);
         if (!ResMan.GetRect("Handle").IsTouched()) {
             if (touchingHandle) {
                 ResMan.GetRect("Handle").StartAnimT(rReturn, Interpolator.Decelerate, 500);
@@ -106,15 +108,15 @@ public class MainScreen extends  Screen {
             HandleX = ResMan.GetRect("Handle").TouchedX() - ResMan.GetRect("Handle").l();
             HandleY = ResMan.GetRect("Handle").TouchedY() - ResMan.GetRect("Handle").b();
         }
-        if (touchingHandle) {
+        if (touchingHandle && !StartingGame) {
             ResMan.GetRect("Handle").setb(rDisplay, ResMan.GetRect("Handle").TouchedY() - HandleY);
             ResMan.GetRect("Handle").sett(rDisplay, ResMan.GetRect("Handle").b() + 10 * fXunit);
             if (ResMan.GetRect("Handle").CenterY() > HorPath.b() && ResMan.GetRect("Handle").b() < HorPath.b()) {
                 TouchLeft = ResMan.GetRect("Handle").TouchedX();
-                ResMan.GetRect("Handle").setl(rDisplay, rReturn.l()  + ((TouchLeft - HandleX - rReturn.l()) * (1 - ((HorPath.b() -  ResMan.GetRect("Handle").b())/(5*fXunit)))));
+                ResMan.GetRect("Handle").setl(rDisplay, rReturn.l() + ((TouchLeft - HandleX - rReturn.l()) * (1 - ((HorPath.b() - ResMan.GetRect("Handle").b()) / (5 * fXunit)))));
                 ResMan.GetRect("Handle").setr(rDisplay, ResMan.GetRect("Handle").l() + 10 * fXunit);
             }
-            if (ResMan.GetRect("Handle" ).CenterY() < HorPath.b()) {
+            if (ResMan.GetRect("Handle").CenterY() < HorPath.b()) {
                 ResMan.GetRect("Handle").setl(rDisplay, rReturn.l());
                 ResMan.GetRect("Handle").setr(rDisplay, ResMan.GetRect("Handle").l() + 10 * fXunit);
             }
@@ -124,7 +126,7 @@ public class MainScreen extends  Screen {
             }
             if (ResMan.GetRect("Handle").b() > HorPath.b()) {
                 TouchLeft = ResMan.GetRect("Handle").TouchedX() - HandleX;
-                ResMan.GetRect("Handle" ).setl(rDisplay, (TouchLeft));
+                ResMan.GetRect("Handle").setl(rDisplay, (TouchLeft));
                 ResMan.GetRect("Handle").setr(rDisplay, ResMan.GetRect("Handle").l() + 10 * fXunit);
                 if (ResMan.GetRect("Handle").b() < rSlowDown.t() && ResMan.GetRect("Handle").b() > rSlowDown.b()) {
                     float fTop = ResMan.GetRect("Handle").TouchedY() - HandleY;
@@ -132,23 +134,34 @@ public class MainScreen extends  Screen {
                     ResMan.GetRect("Handle").sett(ResMan.GetRect("Handle").b() + 10 * fXunit);
                 } else if (ResMan.GetRect("Handle").b() < rSpeedUP.t() && ResMan.GetRect("Handle").b() > rSlowDown.b()) {
                     float fTop = ResMan.GetRect("Handle").TouchedY() - HandleY;
-                    ResMan.GetRect("Handle").setb(fTop - (rSpeedUP.height() * (float)(Math.cos(((fTop-rSpeedUP.b())/rSpeedUP.height())* (0.5 * Math.PI)))));
+                    ResMan.GetRect("Handle").setb(fTop - (rSpeedUP.height() * (float) (Math.cos(((fTop - rSpeedUP.b()) / rSpeedUP.height()) * (0.5 * Math.PI)))));
 
-                ResMan.GetRect("Handle").sett(ResMan.GetRect("Handle").b() + 10 * fXunit);
+                    ResMan.GetRect("Handle").sett(ResMan.GetRect("Handle").b() + 10 * fXunit);
                 }
 
             }
             if (ResMan.GetRect("Handle").b() > rSpeedUP.t()) {
                 TouchLeft = ResMan.GetRect("Handle").TouchedX();
                 if (ResMan.GetRect("Handle").b() - rSpeedUP.t() < 1 * fXunit) {
-                    pos = MenOp.DeterminePos(HorPath,ResMan.GetRect("Handle").CenterX(),TouchLeft);
+                    pos = MenOp.DeterminePos(HorPath, ResMan.GetRect("Handle").CenterX(), TouchLeft);
+                    StartingLevel = pos;
                 }
-                ResMan.GetRect("Handle").setl(MenOp.SetLeft(HorPath,(((rSpeedUP.t()+(5*fYunit))>ResMan.GetRect("Handle").b()))?1-(((rSpeedUP.t()+(5*fYunit))-ResMan.GetRect("Handle").b())/(5*fYunit)):1,HandleX,ResMan.GetRect("Handle").CenterX(),TouchLeft,pos));
+                ResMan.GetRect("Handle").setl(MenOp.SetLeft(HorPath, (((rSpeedUP.t() + (5 * fYunit)) > ResMan.GetRect("Handle").b())) ? 1 - (((rSpeedUP.t() + (5 * fYunit)) - ResMan.GetRect("Handle").b()) / (5 * fYunit)) : 1, HandleX, ResMan.GetRect("Handle").CenterX(), TouchLeft, pos));
                 ResMan.GetRect("Handle").setr(rDisplay, ResMan.GetRect("Handle").l() + 10 * fXunit);
             }
+            StartingGame = ResMan.GetRect("Handle").t() > ScreenY;
+        } else if (touchingHandle) {
+            TouchLeft = ResMan.GetRect("Handle").TouchedX() - HandleX;
+            ResMan.GetRect("Handle").setl(rDisplay, (TouchLeft));
+            ResMan.GetRect("Handle").setr(rDisplay, ResMan.GetRect("Handle").l() + 10 * fXunit);
+            TouchTop = ResMan.GetRect("Handle").TouchedY() - HandleY;
+            ResMan.GetRect("Handle").setb(rDisplay, (TouchTop));
+            ResMan.GetRect("Handle").sett(rDisplay, ResMan.GetRect("Handle").b() + 10 * fXunit);
         }
 
         ResMan.GetRect("Handle").Animate();
     }
-}
+
+    }
+
 
