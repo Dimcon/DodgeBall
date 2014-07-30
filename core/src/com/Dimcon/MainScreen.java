@@ -1,17 +1,6 @@
 package com.Dimcon;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
 /**
  * Created by daimonsewell on 7/11/14.
  */
@@ -33,7 +22,8 @@ public class MainScreen extends  Screen {
     }
 
     boolean touchingHandle = false,
-            StartingGame = false;
+            StartingGame = false,
+            ChangeHandles = true;
     int StartingLevel = 0;
     float HandleX = 0,HandleY = 0,TouchLeft,TouchTop;
     Rect rReturn = new Rect();
@@ -56,6 +46,7 @@ public class MainScreen extends  Screen {
         MenOp = new MenuOptions(fXunit,fYunit,40*fXunit,rDisplay);
         ClipToRDisplay = true;
         SetDebug(true);
+        ResMan.AddRect("StartGame",new Rect());
         return super.Create(batch);
     }
 
@@ -74,12 +65,12 @@ public class MainScreen extends  Screen {
 
     @Override
     public Boolean Draw(DeltaBatch batch) {
-        RestrictHandle(batch.batch);
         HorPath.Draw(ResMan.Get("Handle"),batch.batch);
         rSlowDown = new Rect(HorPath.l(),HorPath.b() + (10*fYunit),HorPath.r(),HorPath.b());
         rSpeedUP = new Rect(rSlowDown.l(),rSlowDown.t() + (10*fYunit),rSlowDown.r(),rSlowDown.t());
         rDisplay.DrawWithAlpha((StartingGame?ResMan.Get("Screen") : ResMan.Get("Handle")), batch.batch, rDisplay.a());
-        MenOp.Update(HorPath,ResMan.GetRect("Handle"),ResMan.GetRect("Handle").CenterX(),rDisplay,batch.batch);
+        if (!StartingGame) MenOp.Update(HorPath,ResMan.GetRect("Handle"),ResMan.GetRect("Handle").CenterX(),rDisplay,batch.batch);
+        RestrictHandle(batch.batch);
         return super.Draw(batch);
     }
 
@@ -103,6 +94,7 @@ public class MainScreen extends  Screen {
                 ResMan.GetRect("Handle").StartAnimT(rReturn, Interpolator.Decelerate, 500);
             }
             touchingHandle = false;
+            ChangeHandles = true;
         } else if (!touchingHandle) {
             touchingHandle = true;
             HandleX = ResMan.GetRect("Handle").TouchedX() - ResMan.GetRect("Handle").l();
@@ -151,17 +143,30 @@ public class MainScreen extends  Screen {
             }
             StartingGame = ResMan.GetRect("Handle").t() > ScreenY;
         } else if (touchingHandle) {
+            float left = MenOp.SetLeft(HorPath, (((rSpeedUP.t() + (5 * fYunit)) > ResMan.GetRect("Handle").b())) ? 1 - (((rSpeedUP.t() + (5 * fYunit)) - ResMan.GetRect("Handle").b()) / (5 * fYunit)) : 1, HandleX, ResMan.GetRect("Handle").CenterX(), TouchLeft, pos);
+            ResMan.GetRect("StartGame").Update(rDisplay,left,ScreenY- (30*fXunit),left + (10*fXunit),ScreenY - (40*fXunit));
+            ResMan.GetRect("StartGame").DrawWithAlpha(ResMan.Get("Screen"), batch,1);
+            if (ResMan.GetRect("StartGame").IsInside(ResMan.GetRect("Handle"))) {
+                Switch("Game");
+            }
             TouchLeft = ResMan.GetRect("Handle").TouchedX() - HandleX;
-            ResMan.GetRect("Handle").setl(rDisplay, (TouchLeft));
+            ResMan.GetRect("Handle").setl(rDisplay, TouchLeft);
             ResMan.GetRect("Handle").setr(rDisplay, ResMan.GetRect("Handle").l() + 10 * fXunit);
             TouchTop = ResMan.GetRect("Handle").TouchedY() - HandleY;
             ResMan.GetRect("Handle").setb(rDisplay, (TouchTop));
             ResMan.GetRect("Handle").sett(rDisplay, ResMan.GetRect("Handle").b() + 10 * fXunit);
-        }
 
+        } else {
+            StartingGame = false;
+        }
+        if (StartingGame && ChangeHandles) {
+            ChangeHandles = false;
+            HandleX = ResMan.GetRect("Handle").TouchedX() - ResMan.GetRect("Handle").l();
+            HandleY = ResMan.GetRect("Handle").TouchedY() - ResMan.GetRect("Handle").b();
+        }
         ResMan.GetRect("Handle").Animate();
     }
 
-    }
+}
 
 

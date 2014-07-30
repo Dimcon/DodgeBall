@@ -2,13 +2,7 @@ package com.Dimcon;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Dodgeball extends ApplicationAdapter {
     public static SplashScreen splash;
@@ -27,7 +21,7 @@ public class Dodgeball extends ApplicationAdapter {
         ScreenManager.AddScreen(main);
         ScreenManager.AddScreen(gamescreen);
         ScreenManager.AddScreen(overlay);
-        Rect.setDebug(true);
+        Rect.setDebug(false);
 	}
 
 	@Override
