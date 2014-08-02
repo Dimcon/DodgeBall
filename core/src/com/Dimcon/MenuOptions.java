@@ -51,9 +51,8 @@ public class MenuOptions {
     public float SetLeft(Rect rHor,float fMult,float fHandle,float CenterX,float fTouchX,int Pos) {
         float TouchXmC = (fTouchX - rHor.l()) - (fTouchX - CenterX);
         float fSingle = rHor.width() / (rArray.length-1);
-        int fPos = Pos;
         /** Limit to current point*/
-        return fTouchX - fHandle + (fMult * ((fPos*fSingle) - TouchXmC));
+        return fTouchX - fHandle + (fMult * ((Pos*fSingle) - TouchXmC));
         /*ACCELDECEL at points      if (bFirstHalf) {
             float fTimesBy = (1 - (float)Math.sin(((TouchXmC - (fPos * fSingle))/(fSingle/2)) * (0.5f*Math.PI)));
             fMod = fMult * fTimesBy * ((TouchXmC - (fPos * fSingle))*1f);
@@ -63,4 +62,5 @@ public class MenuOptions {
         }
         return fTouchX - fMod - fHandle;*/
     }
+
 }

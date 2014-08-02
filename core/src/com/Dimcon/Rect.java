@@ -20,7 +20,8 @@ public class Rect {
      *  Has a higher memory footprint than RectS (Very basic Rect)*/
     /** top,bottom,left,right */
      private float
-                t,b,l,r,a = 1f;
+                t,b,l,r;
+    public float a = 1f;
     private Boolean RelativeToBottom = true,
                     RelativeToLeft = true,
                     Changed = true;
@@ -229,11 +230,11 @@ public class Rect {
         Changed = true;
 
         if (RelativeToBottom) {
-            t = t - fAmount;
-            b = b - fAmount;
-        } else {
             t = t + fAmount;
             b = b + fAmount;
+        } else {
+            t = t - fAmount;
+            b = b - fAmount;
         }
     }
     public void RectCopy(Rect rP) {
@@ -431,7 +432,7 @@ public class Rect {
             }
             AlphaAnimTime += AlphaAnimRate;
             a = preA + (distA * fMult2);
-            if (fMult2 >= 0.999f) {
+            if (fMult2 >= 0.99f) {
                 animAlpha = false;
                 AlphaAnimTime = 0;
                 a = preA + distA;

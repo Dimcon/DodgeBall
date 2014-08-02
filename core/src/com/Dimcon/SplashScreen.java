@@ -22,6 +22,8 @@ public class SplashScreen extends Screen {
         rTest.RectCopy(rDisplay);
         rDisplay.setAlpha(0f);
         rDisplay.StartAnimA(1f,Interpolator.Constant,500);
+        ResMan.AddImage("Screen", "Screenshot.png");
+        ResMan.AddRect("StartGame",new Rect());
         return true;
     }
 
@@ -45,7 +47,7 @@ public class SplashScreen extends Screen {
 
     @Override
     public Boolean AnimOut(DeltaBatch batch) {
-        fAlpha = Math.max(fAlpha - 0.01f,0f);
+        rDisplay.a = Math.max(rDisplay.a - 0.01f,0f);
         rTest.DrawWithAlpha(img, batch.batch, rDisplay.a());
         rTest.RectCopy(rDisplay);
         return (rDisplay.a() == 0f);

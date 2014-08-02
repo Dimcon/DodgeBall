@@ -25,7 +25,8 @@ public class Screen {
      * and should be used with reference to rDisplay in order to achieve
      * screen manipulation such as proper scaling and position. */
 
-
+    /** rDisplay Alpha is used to set the alpha of the SpriteBatch prior to calling
+     * screen procedures. */
     Rect    rDisplay = new Rect(0, Gdx.graphics.getHeight(),Gdx.graphics.getWidth(),0);
     static Rect rFullscreen = new Rect(0, Gdx.graphics.getHeight(),Gdx.graphics.getWidth(),0);
     Boolean Display = false,
@@ -39,9 +40,6 @@ public class Screen {
     float   fXunit = rDisplay.width()/100f,
             fYunit = rDisplay.height()/100f,
 
-    /** fAlpha is used to set the alpha of the SpriteBatch prior to calling
-    * screen procedures. */
-            fAlpha = 0,
 
             ScreenY = Gdx.graphics.getHeight(),
             ScreenX = Gdx.graphics.getWidth();
@@ -108,8 +106,8 @@ public class Screen {
         /** Called after Create. AnimIn is called continuously until it returns true.
         *  By default a simple fade in animation has been set up. Override to create
         *  a different animation. Return true to move on to Draw stage. */
-        fAlpha = Math.min(fAlpha + 0.01f, 1f);
-        return (fAlpha == 1f);
+        rDisplay.a = Math.min(rDisplay.a + 0.01f, 1f);
+        return (rDisplay.a == 1f);
     }
     public Boolean Draw(DeltaBatch batch) {
         /** The main logic loop of a screen. Called continuously after AnimIn until
@@ -120,8 +118,8 @@ public class Screen {
         /** Called at the same time the previous screens AnimIn is called. Called
         * continuously once the current screen has been switched out until returns true.
         * This allows an animation when switching screens. */
-        fAlpha = Math.max(fAlpha - 0.01f, 0f);
-        return (fAlpha == 0f);
+        rDisplay.a = Math.max(rDisplay.a - 0.01f, 0f);
+        return (rDisplay.a == 0f);
     }
     public Boolean Destroy(DeltaBatch batch) {
         /** Called once AnimOut has completed and should only be called once. */

@@ -60,13 +60,14 @@ public class ScreenManager {
                 LocalScreen.BeginClip(batch);
                 LocalScreen.ClipRect(ScreenStore.get(key).rDisplay);
             }
+            batch.batch.setColor(batch.batch.getColor().r,batch.batch.getColor().g,batch.batch.getColor().b,LocalScreen.rDisplay.a);
             /** NB NB NB NB NB
              * Multiple batch sessions in a single frame may decrease performance dramatically. */
             switch (LocalScreen.stage) {
                 case Deactivated: default:
                     break;
                 case Create:
-                    if (!LocalScreen.Created || !LocalScreen.CreateAgain) {
+                    if (!LocalScreen.Created || LocalScreen.CreateAgain) {
                         if (LocalScreen.Create(batch)) {
                             LocalScreen.stage = CycleStage.AnimateIn;
                         }
@@ -103,7 +104,7 @@ public class ScreenManager {
             for (String key2 : LocalScreen.ButtonStore.keySet()) {
                 LocalScreen.ButtonStore.get(key2).UpdatePos(LocalScreen.rDisplay);
             }
-            if (LocalScreen.Debugger) {
+            if (LocalScreen.Debugger && LocalScreen.stage != CycleStage.Deactivated) {
                 LocalScreen.DrawDebug(batch.batch);
             }
 
