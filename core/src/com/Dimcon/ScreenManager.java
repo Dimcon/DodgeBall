@@ -18,9 +18,8 @@ public class ScreenManager {
                 FramesPerSecond = 60,
                 UpdateRate = 100000000/FramesPerSecond;
     static DeltaBatch batch = new DeltaBatch();
-    static ResMan ResMan = new ResMan();
     static SpriteBatch Sbatch = new SpriteBatch();
-    static int RectsPerRound = 0;
+    static int RectsPerRound = 0,SmallImagesCalled,LargeImagesCalled;
 
     public static void FirstScreen(Screen First) {
         Gdx.input.setInputProcessor(batch.toucher);
@@ -50,6 +49,7 @@ public class ScreenManager {
         Rect.RectsDrawn = 0;
         batch.Delta = UpdateRate/(System.nanoTime() - Now);
         Now = System.nanoTime();
+        com.Dimcon.ResMan.ResetUsed();
         //////// Iterate through each screen.
 
         for (String key : ScreenStore.keySet()) {
@@ -114,6 +114,8 @@ public class ScreenManager {
             }
         }//////////////////////////////////
 
+        LargeImagesCalled = ResMan.getUsedLarge();
+        SmallImagesCalled = ResMan.getUsedSmall();
         RectsPerRound = Rect.RectsDrawn;
         batch.DrawStage.act();
         batch.DrawStage.draw();

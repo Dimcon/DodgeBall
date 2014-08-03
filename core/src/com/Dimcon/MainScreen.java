@@ -71,15 +71,13 @@ public class MainScreen extends  Screen {
         return super.AnimIn(batch);
     }
 
-
-
     @Override
     public Boolean Draw(DeltaBatch batch) {
         //HorPath.Draw(ResMan.Get("Handle"),batch.batch);
         OverlayScreen.DrawPlayer = StartingGame;
         rSlowDown = new Rect(HorPath.l(),HorPath.b() + (10*fYunit),HorPath.r(),HorPath.b());
         rSpeedUP = new Rect(rSlowDown.l(),rSlowDown.t() + (10*fYunit),rSlowDown.r(),rSlowDown.t());
-        rDisplay.DrawWithAlpha(ResMan.Get("Handle"), batch.batch, 1f);
+        rDisplay.Draw(ResMan.Get("Handle"), batch.batch, 1f);
         rDisplay.Draw(ResMan.Get("Screen"), batch.batch);
         if (!StartingGame) MenOp.Update(HorPath,ResMan.GetRect("Handle"),ResMan.GetRect("Handle").CenterX(),rDisplay,batch.batch);
         RestrictHandle(batch.batch);
@@ -88,8 +86,8 @@ public class MainScreen extends  Screen {
 
     @Override
     public Boolean AnimOut(DeltaBatch batch) {
-        rDisplay.Draw(ResMan.Get("Screen"), batch.batch);
-        rDisplay.a = Math.max(rDisplay.a - 0.01f, 0f);
+        rDisplay.Draw(ResMan.Get("Handle"), batch.batch);
+        rDisplay.a = Math.max(rDisplay.a - 0.05f, 0f);
         return (rDisplay.a == 0f);
     }
 
@@ -105,7 +103,7 @@ public class MainScreen extends  Screen {
             if (touchingHandle) {
                 ResMan.GetRect("Handle").StartAnimT(rReturn, Interpolator.Decelerate, 500);
                 rDisplay.StartAnimA(1f,Interpolator.Constant,200);
-
+                ResMan.GetRect("Player").StartAnimA(0,Interpolator.Constant,500);
             }
             touchingHandle = false;
 

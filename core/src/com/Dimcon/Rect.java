@@ -488,6 +488,20 @@ public class Rect {
         }
         return -1;
     }
+    public float TouchedHandlex() {
+        /** Reports the horizontal size of the space between the rect and the pointer. */
+        if (IsTouched()) {
+            return TouchHandler.TouchMap.get(pointer).TouchPosX - l;
+        }
+        return -1;
+    }
+    public float TouchedHandleY() {
+        /** Reports the vertical size of the space between the rect and the pointer. */
+        if (IsTouched()) {
+            return TouchHandler.TouchMap.get(pointer).TouchPosY - b;
+        }
+        return -1;
+    }
     public Boolean IsTouching() {
         /** This makes the rect desperate. It will report true if there is ANY
          *  touch within the rect. */

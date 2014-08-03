@@ -200,7 +200,8 @@ public class Screen {
     public void DrawDebug(SpriteBatch batch) {
         sDebugInfo = "| " + Gdx.graphics.getFramesPerSecond() + "Fps | " +
                 ScreenManager.RectsPerRound + " Rects | " +
-                (ResMan.SmallImages - ResMan.SmallImagesPurged) + "/" + (ResMan.SmallImages)  + "S-L"
+                (ResMan.SmallImages - ResMan.SmallImagesPurged) + "/" + (ResMan.SmallImages)  + " ("
+                + ScreenManager.SmallImagesCalled + ")S-L(" + ScreenManager.LargeImagesCalled + ") "
                 + (ResMan.LargeImages - ResMan.LargeImagesPurged) + "/" + (ResMan.LargeImages) + " |";
         fontDebug.setColor(0,0,1,1);
         fontDebug.draw(batch, sDebugInfo,rDisplay.l() + fXunit,rDisplay.t() - fYunit);

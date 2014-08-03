@@ -25,6 +25,28 @@ public class ResMan {
             return RectStore.get(sName);
         return null;
     }
+    public static void ResetUsed() {
+        for (String key: ImageStore.keySet()) {
+            ImageStore.get(key).DeclareNewRound();
+        }
+        for (String key: ImageStoreLarge.keySet()) {
+            ImageStoreLarge.get(key).DeclareNewRound();
+        }
+    }
+    public static int getUsedSmall() {
+        int used = 0;
+        for (String key: ImageStore.keySet()) {
+            used += ImageStore.get(key).Used;
+        }
+        return used;
+    }
+    public static int getUsedLarge() {
+        int used = 0;
+        for (String key: ImageStoreLarge.keySet()) {
+            used += ImageStoreLarge.get(key).Used;
+        }
+        return used;
+    }
     public ResMan(Texture DefaultTexture,Integer SmallResLimit,Integer LargeResLimit) {
         ImageStore = new HashMap<String, Resource>(100);
         ImageStoreLarge = new HashMap<String, Resource>();
@@ -58,13 +80,13 @@ public class ResMan {
                 ImageStore.get(sName).GetBack();
                 SmallImagesPurged--;
             }
-            return ImageStore.get(sName).imgResource;
+            return ImageStore.get(sName).Image();
         } else if (ImageStoreLarge.containsKey(sName)) {
             if (ImageStoreLarge.get(sName).isNull) {
                 ImageStoreLarge.get(sName).GetBack();
                 LargeImagesPurged--;
             }
-            return ImageStoreLarge.get(sName).imgResource;
+            return ImageStoreLarge.get(sName).Image();
         }
         return null;
     }
@@ -109,6 +131,7 @@ class Resource {
     Texture imgResource;
     float Size;
     boolean isNull = true;
+    int Used = 0;
 
     Resource(String sNameP,String sPathP,String sGroupP) {
         Group = sGroupP;
@@ -117,7 +140,13 @@ class Resource {
         GetBack();
         Size = imgResource.getHeight() * imgResource.getWidth();
     }
-
+    public Texture Image() {
+        Used++;
+        return imgResource;
+    }
+    public void DeclareNewRound() {
+        Used = 0;
+    }
     public void GetBack() {
         imgResource = new Texture(sPath);
         isNull = false;

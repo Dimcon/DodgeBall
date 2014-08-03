@@ -49,14 +49,12 @@ public class OverlayScreen extends Screen {
     float HandleY = 0;
     @Override
     public Boolean Draw(DeltaBatch batch) {
-        if (true) {
-            ResMan.GetRect("Player").Update(rDisplay,
-                    ResMan.GetRect("Handle").CenterX() - (2.5f * fXunit),
-                    ResMan.GetRect("Handle").CenterY() + (22.5f * fXunit),
-                    ResMan.GetRect("Handle").CenterX() + (2.5f * fXunit),
-                    ResMan.GetRect("Handle").CenterY() + (17.5f * fXunit));
-            ResMan.GetRect("Player").Draw(ResMan.Get("Player"), batch.batch);
-        }
+        ResMan.GetRect("Player").Update(rDisplay,
+                ResMan.GetRect("Handle").CenterX() - (2.5f * fXunit),
+                ResMan.GetRect("Handle").CenterY() + (22.5f * fXunit),
+                ResMan.GetRect("Handle").CenterX() + (2.5f * fXunit),
+                ResMan.GetRect("Handle").CenterY() + (17.5f * fXunit));
+        ResMan.GetRect("Player").Draw(ResMan.Get("Player"), batch.batch);
         ResMan.GetRect("Handle").Draw(ResMan.Get("Handle"),batch.batch,rDisplay.a);
         if (TrackFinger) {
             if (!ResMan.GetRect("Handle").IsTouched()) {
