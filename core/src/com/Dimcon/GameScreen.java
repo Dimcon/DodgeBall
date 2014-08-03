@@ -14,7 +14,11 @@ public class GameScreen extends Screen {
         Name = "Game";
     }
     public HashMap<Integer,Rect> EnemyStore = new HashMap<Integer, Rect>();
-    public float SpawnHeight = 50*fYunit, SpawnWidth = 40*fXunit,MaxWidth = 5*fXunit,MinWidth = 1*fXunit;
+    public float SpawnHeight = 50*fYunit,
+            SpawnWidth = 40*fXunit,
+            MaxWidth = 5*fXunit,
+            MinWidth = 1*fXunit,
+            MaxGap, MinGap;
     public boolean ClearedStaging = false;
 
     @Override
@@ -30,6 +34,10 @@ public class GameScreen extends Screen {
 
     @Override
     public Boolean Create(DeltaBatch batch) {
+        Oracle = 0;
+        iLife= new Random().nextInt(100);
+        iBomb= new Random().nextInt(100);
+        iShield= new Random().nextInt(100);
         HandleX = ResMan.GetRect("Handle").TouchedX() - ResMan.GetRect("Handle").l();
         HandleY = ResMan.GetRect("Handle").TouchedY() - ResMan.GetRect("Handle").b();
         rDisplay.Moveup(100*fYunit);
@@ -65,10 +73,23 @@ public class GameScreen extends Screen {
         return super.Destroy(batch);
     }
 
+    int Oracle = 0,
+            iLife,
+            iBomb,
+            iShield;
     public void SpawnRow() {
         ClearedStaging = false;
-        float Pos = 0;
-
+        int Type;
+        if (Oracle == iBomb) {
+            Type = 2;
+        } else if (Oracle == iLife) {
+            Type = 3;
+        } else if (Oracle == iShield) {
+            Type = 1;
+        } else {
+            Type = 0;
+        }
+        for (float i = 0; i < ScreenX; i++) {}
     }
 
 }
@@ -81,9 +102,18 @@ class EnemRect {
             iBomb = new Random().nextInt(100),
             iLife = new Random().nextInt(100);
 
-    EnemRect(Rect position,int type) {
-        Position = position;
-
+    public float Setup(float fLeft,int type) {
+        switch (type) {
+            case 1: tp = Type.Shield;
+                break;
+            case 2: tp = Type.Bomb;
+                break;
+            case 3: tp = Type.Life;
+                break;
+            default: tp = Type.Normal;
+                break;
+        }
+        return 0.0f;
     }
 
     public void Draw(SpriteBatch batch) {
@@ -92,7 +122,7 @@ class EnemRect {
 }
 
 enum Type {
-    Normal,Shield,Bomb,Life;
+    Normal,Bomb,Life, Shield;
     public void SetUpType() {
         ResMan.AddImage(Normal.toString(),"Screen","Type");
         ResMan.AddImage(Shield.toString(),"Screen","Type");
