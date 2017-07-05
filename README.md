@@ -54,11 +54,3 @@ TouchHandler.java
 
 ##STILL IN PROGRESS
 
-####If you have any questions, Email the Developer at 
-
-###DaimonSewell@Gmail.com
-
-####If you would like to help out with development you can whatsapp me 
-
-###--> 072 485 5478
-
